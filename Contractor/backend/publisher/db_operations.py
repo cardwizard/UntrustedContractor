@@ -1,6 +1,9 @@
 from sqlalchemy_utils import database_exists, create_database, drop_database
-from sqlalchemy import create_engine
+from sqlalchemy import *
+from sqlalchemy.ext.declarative import declarative_base
 from Contractor.constants import POSTGRES_CONNECTION
+
+column_map = {"Integer": Integer, "String": String, "Boolean": Boolean, "JSON": JSON}
 
 def create_db(db_name) -> bool:
     """
@@ -28,4 +31,30 @@ def drop_db(db_name) -> bool:
         return False
 
     drop_database(engine.url)
+    return True
+
+
+def build_schema(table_name, attributes):
+
+    new_attributes = {"__tablename__": table_name}
+
+    for attribute in attributes:
+        column_name = attribute["Column"]
+        is_primary_key = attribute["Primary Key"]
+        column_type = attribute["Type"]
+        if is_primary_key:
+            new_attributes[column_name] = Column(column_map[column_type], primary_key=True)
+        else:
+            new_attributes[column_name] = Column(column_map[column_type])
+    return new_attributes
+
+
+def create_table(attributes, db_name):
+
+    Base = declarative_base()
+    NewSchema = type("NewSchema", (Base,), attributes)
+    engine = create_engine(POSTGRES_CONNECTION.format(db_name), echo=True)
+
+    Base.metadata.create_all(engine)
+
     return True

@@ -1,4 +1,7 @@
-from requests import get, post
+from requests import post
+from Publisher.models.schemas import Student
+from json import dumps
+
 
 url = "http://localhost:10000/v1/publisher/{}"
 
@@ -15,5 +18,12 @@ def unregister_client(client_name):
     print(response.status_code, response.json())
 
 
+def add_new_table(client_name, table_name, schema):
+    args = {"publisher_name": client_name, "table_name": table_name, "alchemy_schema": schema}
+    response = post(url.format("add_new_table"), data=args)
+    print(response.status_code, response.json())
+
+
 if __name__ == '__main__':
-    unregister_client("UMD")
+    # register_client("UMD")
+    add_new_table("UMD", "Student", dumps([x.get_object() for x in Student]))
