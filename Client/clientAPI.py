@@ -6,7 +6,7 @@ from Utils.key_operations import get_key
 
 import pandas as pd
 
-url = "http://localhost:10000/v1/publisher/{}"
+url = "http://localhost:10000/v1/client/{}"
 
 # Defining a table class
 Student = [SQLObject("id", Types.INT),
@@ -28,7 +28,7 @@ def decrypt_data(encrypted_data):
 
 def get_data(client_name, table_name, schema):
     args = {"publisher_name": client_name, "table_name": table_name, "alchemy_schema": schema}
-    response = post(url.format("get_data"), data=args)
+    response = post(url.format("get_all_data"), data=args)
 
     data = []
     if response.json().get("status"):

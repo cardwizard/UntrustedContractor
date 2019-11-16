@@ -73,20 +73,6 @@ def add_data_():
     return jsonify(status=stat)
 
 
-@publisher_api.route("/get_data", methods=["POST"])
-def get_data_():
-    parser = reqparse.RequestParser()
-    parser.add_argument("publisher_name", type=str)
-    parser.add_argument("table_name", type=str)
-    parser.add_argument("alchemy_schema", type=loads)
-
-    args = parser.parse_args()
-    attributes = build_schema(args["table_name"], args["alchemy_schema"])
-    info = get_data(attributes, args["publisher_name"])
-
-    return jsonify(status=True, data=dumps(info))
-
-
 @publisher_api.route("/add_projection", methods=["POST"])
 def add_projection_():
     parser = reqparse.RequestParser()

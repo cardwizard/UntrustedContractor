@@ -100,12 +100,12 @@ if __name__ == '__main__':
     table_name_ = "Student"
 
     # Start from a clean slate
-    # unregister_client(client_name_)
-    # register_client(client_name_)
+    unregister_client(client_name_)
+    register_client(client_name_)
 
     # Create schema in our new format
-    # schema_ = dumps([x.get_object() for x in Student])
-    # add_new_table(client_name_, table_name_, schema=schema_)
+    schema_ = dumps([x.get_object() for x in Student])
+    add_new_table(client_name_, table_name_, schema=schema_)
 
     # Create some dummy data
     with open("../Data/dataNov-16-2019.csv") as f:
@@ -125,15 +125,13 @@ if __name__ == '__main__':
         data_to_add.append({"id": id, "name": info[0], "age": info[1], "department": info[2], "registered": info[3]})
 
     # Encrypt the data
-    # encrypted_data = encrypt_data(data_to_add, ["id"])
-    # data = dumps(encrypted_data)
+    encrypted_data = encrypt_data(data_to_add, ["id"])
+    data = dumps(encrypted_data)
 
     # Add encrypted data to the newly created table
-    # add_data(client_name_, table_name_, schema=schema_, data_list=data)
+    add_data(client_name_, table_name_, schema=schema_, data_list=data)
     projections = create_projections(data_to_add)
-    # print(projections[0]["projection"])
 
     for proj in projections:
         add_projection(client_name=client_name_, column_name=proj["column"], schema=proj["schema"],
                        data_list=proj["projection"])
-
