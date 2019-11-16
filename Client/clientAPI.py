@@ -1,10 +1,19 @@
 from requests import get, post
 from Utils.cryptors import Cryptor
-from Utils.models.schemas import Student
+from Utils.models.schemas import SQLObject, Types
 from json import loads, dumps
 from Utils.key_operations import get_key
 
+import pandas as pd
+
 url = "http://localhost:10000/v1/publisher/{}"
+
+# Defining a table class
+Student = [SQLObject("id", Types.INT),
+           SQLObject("name", Types.STR, True),
+           SQLObject("age", Types.STR),
+           SQLObject("department", Types.STR),
+           SQLObject("registered", Types.STR)]
 
 
 def decrypt_data(encrypted_data):
@@ -30,13 +39,12 @@ def get_data(client_name, table_name, schema):
 
 def get_data_from_publisher(client_name, table_name, schema):
     encrypted_data = get_data(client_name, table_name, schema=schema)
-    print(decrypt_data(encrypted_data))
+    return decrypt_data(encrypted_data)
 
 
 if __name__ == '__main__':
     client_name_ = "UMD"
     table_name_ = "Student"
     schema_ = dumps([x.get_object() for x in Student])
-    get_data_from_publisher(client_name_, table_name_, schema_)
-
-
+    output = get_data_from_publisher(client_name_, table_name_, schema_)
+    print(pd.DataFrame(output).department.unique())

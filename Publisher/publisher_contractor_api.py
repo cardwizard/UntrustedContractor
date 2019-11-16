@@ -1,11 +1,18 @@
 from requests import post, get
-from Utils.models.schemas import Student
+from Utils.models.schemas import SQLObject, Types
 from json import dumps, loads
 from Utils.cryptors import Cryptor
 from Utils.key_operations import get_key
-
+from Publisher.projection_generator import Projection
 
 url = "http://localhost:10000/v1/publisher/{}"
+
+# Defining a table class
+Student = [SQLObject("id", Types.INT),
+           SQLObject("name", Types.STR, True),
+           SQLObject("age", Types.STR),
+           SQLObject("department", Types.STR),
+           SQLObject("registered", Types.STR)]
 
 
 def register_client(client_name):
@@ -59,6 +66,28 @@ def encrypt_data(data_list, skip_keys):
     return encrypted_data
 
 
+def create_projections(data_to_add):
+    p_age = Projection("int")
+    schema_age, projection_age = p_age.create_projections([{"column": int(x["age"]), "id": x["id"]} for x in data_to_add],
+                                              [(10, 15), (15, 18), (18, 20), (20, 23), (23, 26), (26, 29), (30, 100)])
+
+    p_name = Projection("str")
+    schema_name, projection_name = p_name.create_projections([{"column": x["name"], "id": x["id"]} for x in data_to_add],
+                                                [chr(x) for x in range(ord('A'), ord('Z'))])
+
+    p_dept = Projection("str")
+    schema_dept, projection_dept = p_dept.create_projections([{"column": x["department"], "id": x["id"]} for x in data_to_add],
+                                                ['ENEE', 'CMSC', 'COMM', 'HUMA', 'ENTC'])
+
+    p_reg = Projection("identity")
+    schema_reg, projection_registered = p_reg.create_projections([{"column": x["registered"], "id": x["id"]} for x in data_to_add],
+                                                     [])
+    return [{"column": "age", "schema": schema_age, "projection": projection_age},
+            {"column": "name", "schema": schema_name, "projection": projection_name},
+            {"column": "department", "schema": schema_dept, "projection": projection_dept},
+            {"column": "registered", "schema": schema_reg, "projection": projection_registered}]
+
+
 if __name__ == '__main__':
 
     client_name_ = "UMD"
@@ -69,8 +98,8 @@ if __name__ == '__main__':
     # register_client(client_name_)
 
     # Create schema in our new format
-    schema_ = dumps([x.get_object() for x in Student])
-    add_new_table(client_name_, table_name_, schema=schema_)
+    # schema_ = dumps([x.get_object() for x in Student])
+    # add_new_table(client_name_, table_name_, schema=schema_)
 
     # Create some dummy data
     with open("../Data/dataNov-16-2019.csv") as f:
@@ -94,4 +123,7 @@ if __name__ == '__main__':
     data = dumps(encrypted_data)
 
     # Add encrypted data to the newly created table
-    add_data(client_name_, table_name_, schema=schema_, data_list=data)
+    # add_data(client_name_, table_name_, schema=schema_, data_list=data)
+    projections = create_projections(data_to_add)
+    print(projections)
+
