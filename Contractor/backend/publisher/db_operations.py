@@ -4,7 +4,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from Contractor.constants import POSTGRES_CONNECTION
 
-column_map = {"Integer": Integer, "String": String, "Boolean": Boolean, "JSON": JSON}
+column_map = {"Integer": Integer, "String": String, "Boolean": Boolean, "JSON": JSON, "BINARY": LargeBinary}
 
 
 def create_db(db_name):

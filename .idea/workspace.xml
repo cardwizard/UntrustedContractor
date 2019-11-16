@@ -2,9 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="c8ec4ee1-baf1-4c80-bf3f-2df4e03637e1" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/Utils/cryptors.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Contractor/backend/publisher/api.py" beforeDir="false" afterPath="$PROJECT_DIR$/Contractor/backend/publisher/api.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/clientAPI.py" beforeDir="false" afterPath="$PROJECT_DIR$/Client/clientAPI.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Contractor/backend/publisher/db_operations.py" beforeDir="false" afterPath="$PROJECT_DIR$/Contractor/backend/publisher/db_operations.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Publisher/cryptors.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Publisher/models/schemas.py" beforeDir="false" afterPath="$PROJECT_DIR$/Utils/models/schemas.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Publisher/publisher_contractor_api.py" beforeDir="false" afterPath="$PROJECT_DIR$/Publisher/publisher_contractor_api.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -40,6 +43,8 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\HP\Desktop\Databases\FinalProject\Utils" />
+      <recent name="C:\Users\HP\Desktop\Databases\FinalProject" />
       <recent name="C:\Users\HP\Desktop\Databases\FinalProject\Contractor\backend" />
     </key>
   </component>
@@ -55,7 +60,49 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.publisher_contractor_api">
+  <component name="RunManager" selected="Python.clientAPI">
+    <configuration name="clientAPI" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="FinalProject" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Client" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Client/clientAPI.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="key_server" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="FinalProject" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Publisher" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Publisher/key_server.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="publisher_contractor_api" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="FinalProject" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -121,7 +168,9 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.clientAPI" />
         <item itemvalue="Python.publisher_contractor_api" />
+        <item itemvalue="Python.key_server" />
         <item itemvalue="Python.runserver" />
         <item itemvalue="Python.schemas" />
       </list>

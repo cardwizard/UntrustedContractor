@@ -6,6 +6,7 @@ class Types(Enum):
     INT = "Integer"
     BOOL = "Boolean"
     JSON = "JSON"
+    BINARY = "BINARY"
 
 
 class SQLObject:
@@ -20,6 +21,6 @@ class SQLObject:
 
 # Defining a table class
 Student = [SQLObject("name", Types.STR, True),
-           SQLObject("age", Types.INT),
+           SQLObject("age", Types.STR),
            SQLObject("department", Types.STR),
-           SQLObject("registered", Types.BOOL)]
+           SQLObject("registered", Types.STR)]

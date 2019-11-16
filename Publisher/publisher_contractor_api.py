@@ -1,6 +1,8 @@
-from requests import post
-from Publisher.models.schemas import Student
+from requests import post, get
+from Utils.models.schemas import Student
 from json import dumps, loads
+from Utils.cryptors import Cryptor
+from Utils.key_operations import get_key
 
 
 url = "http://localhost:10000/v1/publisher/{}"
@@ -44,20 +46,38 @@ def get_data(client_name, table_name, schema):
     if response.json().get("status"):
         data = loads(response.json().get("data"))
 
-    print(data)
+    return data
+
+
+def encrypt_data(data_list):
+    fernet_key = get_key()
+    crypt = Cryptor(fernet_key)
+    encrypted_data = []
+
+    for data in data_list:
+        encrypted_data.append(crypt.encrypt(data))
+    return encrypted_data
 
 
 if __name__ == '__main__':
+
     client_name_ = "UMD"
+    table_name_ = "Student"
 
-    # register_client(client_name_)
-    schema_ = dumps([x.get_object() for x in Student])
-
-    get_data(client_name_, "Student", schema=schema_)
-    # add_new_table(client_name_, "Student", schema=schema_)
-    # data = dumps([{"name": "Aadesh", "age": 25, "department": "CMSC", "registered": True}])
-    # add_data(client_name_, "Student", schema=schema_, data_list=data)
-
-    # delete_table(client_name_, "Student", schema=schema_)
+    # Start from a clean slate
     # unregister_client(client_name_)
+    # register_client(client_name_)
 
+    # Create schema in our new format
+    schema_ = dumps([x.get_object() for x in Student])
+    # add_new_table(client_name_, table_name_, schema=schema_)
+
+    # Create some dummy data
+    data_to_add = [{"name": "Aadesh", "age": 25, "department": "CMSC", "registered": True}]
+
+    # Encrypt the data
+    encrypted_data = encrypt_data(data_to_add)
+    data = dumps(encrypted_data)
+
+    # Add encrypted data to the newly created table
+    add_data(client_name_, table_name_, schema=schema_, data_list=data)
