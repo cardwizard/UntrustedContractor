@@ -6,10 +6,13 @@ class Cryptor:
         self.key = key
         self.fernet = Fernet(self.key)
 
-    def encrypt(self, data):
+    def encrypt(self, data, skip_keys):
         encrypted_data = {}
 
         for key, value in data.items():
+            if key in skip_keys:
+                encrypted_data[key] = value
+                continue
             encrypted_data[key] = self.fernet.encrypt(str(value).encode()).decode()
 
         return encrypted_data

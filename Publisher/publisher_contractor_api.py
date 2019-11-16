@@ -49,13 +49,13 @@ def get_data(client_name, table_name, schema):
     return data
 
 
-def encrypt_data(data_list):
+def encrypt_data(data_list, skip_keys):
     fernet_key = get_key()
     crypt = Cryptor(fernet_key)
     encrypted_data = []
 
     for data in data_list:
-        encrypted_data.append(crypt.encrypt(data))
+        encrypted_data.append(crypt.encrypt(data, skip_keys))
     return encrypted_data
 
 
@@ -70,19 +70,27 @@ if __name__ == '__main__':
 
     # Create schema in our new format
     schema_ = dumps([x.get_object() for x in Student])
-    # add_new_table(client_name_, table_name_, schema=schema_)
+    add_new_table(client_name_, table_name_, schema=schema_)
 
     # Create some dummy data
     with open("../Data/dataNov-16-2019.csv") as f:
         data = f.read()
 
+    with open("../Data/dataNov-16-2019-1.csv") as f:
+        data2 = f.read()
+
+    data = data.splitlines()[1:]
+    data2 = data2.splitlines()[1:]
+    data.extend(data2)
+
     data_to_add = []
-    for d in data.splitlines()[1:]:
+
+    for id, d in enumerate(data):
         info = d.strip().split(",")
-        data_to_add.append({"name": info[0], "age": info[1], "department": info[2], "registered": info[3]})
+        data_to_add.append({"id": id, "name": info[0], "age": info[1], "department": info[2], "registered": info[3]})
 
     # Encrypt the data
-    encrypted_data = encrypt_data(data_to_add)
+    encrypted_data = encrypt_data(data_to_add, ["id"])
     data = dumps(encrypted_data)
 
     # Add encrypted data to the newly created table

@@ -20,7 +20,8 @@ class SQLObject:
 
 
 # Defining a table class
-Student = [SQLObject("name", Types.STR, True),
+Student = [SQLObject("id", Types.INT),
+           SQLObject("name", Types.STR, True),
            SQLObject("age", Types.STR),
            SQLObject("department", Types.STR),
            SQLObject("registered", Types.STR)]

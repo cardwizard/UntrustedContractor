@@ -39,6 +39,7 @@ def define_table():
     parser.add_argument("alchemy_schema", type=loads)
 
     args = parser.parse_args()
+
     attributes = build_schema(args["table_name"], args["alchemy_schema"])
     stat = create_table(attributes, args["publisher_name"])
     return jsonify(status=stat)

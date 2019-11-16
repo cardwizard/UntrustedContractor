@@ -44,10 +44,12 @@ def build_schema(table_name, attributes):
         column_name = attribute["Column"]
         is_primary_key = attribute["Primary Key"]
         column_type = attribute["Type"]
+
         if is_primary_key:
             new_attributes[column_name] = Column(column_map[column_type], primary_key=True)
         else:
             new_attributes[column_name] = Column(column_map[column_type])
+
     return new_attributes
 
 
