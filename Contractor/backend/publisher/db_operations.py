@@ -103,7 +103,8 @@ def get_session(db_name):
 
 
 def push_data(attributes, db_name, data_to_add):
-    NewSchema, Base = get_schema(attributes)
+    Base = declarative_base()
+    NewSchema = type("NewSchema", (Base,), attributes)
 
     session = get_session(db_name)
     add_list = []

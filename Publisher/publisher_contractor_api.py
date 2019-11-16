@@ -68,24 +68,30 @@ def encrypt_data(data_list, skip_keys):
 
 def create_projections(data_to_add):
     p_age = Projection("int")
-    schema_age, projection_age = p_age.create_projections([{"column": int(x["age"]), "id": x["id"]} for x in data_to_add],
+    schema_age, projection_age = p_age.create_projections([{"column": int(x["age"]), "proj_id": x["id"]} for x in data_to_add],
                                               [(10, 15), (15, 18), (18, 20), (20, 23), (23, 26), (26, 29), (30, 100)])
 
     p_name = Projection("str")
-    schema_name, projection_name = p_name.create_projections([{"column": x["name"], "id": x["id"]} for x in data_to_add],
+    schema_name, projection_name = p_name.create_projections([{"column": x["name"], "proj_id": x["id"]} for x in data_to_add],
                                                 [chr(x) for x in range(ord('A'), ord('Z'))])
 
     p_dept = Projection("str")
-    schema_dept, projection_dept = p_dept.create_projections([{"column": x["department"], "id": x["id"]} for x in data_to_add],
+    schema_dept, projection_dept = p_dept.create_projections([{"column": x["department"], "proj_id": x["id"]} for x in data_to_add],
                                                 ['ENEE', 'CMSC', 'COMM', 'HUMA', 'ENTC'])
 
     p_reg = Projection("identity")
-    schema_reg, projection_registered = p_reg.create_projections([{"column": x["registered"], "id": x["id"]} for x in data_to_add],
+    schema_reg, projection_registered = p_reg.create_projections([{"column": x["registered"], "proj_id": x["id"]} for x in data_to_add],
                                                      [])
     return [{"column": "age", "schema": schema_age, "projection": projection_age},
             {"column": "name", "schema": schema_name, "projection": projection_name},
             {"column": "department", "schema": schema_dept, "projection": projection_dept},
             {"column": "registered", "schema": schema_reg, "projection": projection_registered}]
+
+
+def add_projection(client_name, column_name, schema, data_list):
+    args = {"publisher_name": client_name, "column": column_name, "schema": schema, "data": dumps(data_list)}
+    response = post(url.format("add_projection"), data=args)
+    print(response.status_code, response.json())
 
 
 if __name__ == '__main__':
@@ -119,11 +125,15 @@ if __name__ == '__main__':
         data_to_add.append({"id": id, "name": info[0], "age": info[1], "department": info[2], "registered": info[3]})
 
     # Encrypt the data
-    encrypted_data = encrypt_data(data_to_add, ["id"])
-    data = dumps(encrypted_data)
+    # encrypted_data = encrypt_data(data_to_add, ["id"])
+    # data = dumps(encrypted_data)
 
     # Add encrypted data to the newly created table
     # add_data(client_name_, table_name_, schema=schema_, data_list=data)
     projections = create_projections(data_to_add)
-    print(projections)
+    # print(projections[0]["projection"])
+
+    for proj in projections:
+        add_projection(client_name=client_name_, column_name=proj["column"], schema=proj["schema"],
+                       data_list=proj["projection"])
 

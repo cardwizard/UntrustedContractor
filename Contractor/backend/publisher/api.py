@@ -85,3 +85,20 @@ def get_data_():
     info = get_data(attributes, args["publisher_name"])
 
     return jsonify(status=True, data=dumps(info))
+
+
+@publisher_api.route("/add_projection", methods=["POST"])
+def add_projection_():
+    parser = reqparse.RequestParser()
+    parser.add_argument("publisher_name", type=str)
+    parser.add_argument("column", type=str)
+    parser.add_argument("schema", type=loads)
+    parser.add_argument("data", type=loads)
+
+    args = parser.parse_args()
+    attributes = build_schema("projection_{}".format(args["column"]), args["schema"])
+    create_table(attributes, args["publisher_name"])
+
+    attributes = build_schema("projection_{}".format(args["column"]), args["schema"])
+    stat = push_data(attributes, args["publisher_name"], args["data"])
+    return jsonify(status=stat, message="Table creation_successful")
