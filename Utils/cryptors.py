@@ -1,5 +1,6 @@
 from cryptography.fernet import Fernet
 
+
 class Cryptor:
     def __init__(self, key):
         self.key = key
@@ -21,4 +22,5 @@ class Cryptor:
                 decrypted_data[key] = self.fernet.decrypt(value.encode()).decode()
             except:
                 decrypted_data[key] = value
+
         return decrypted_data

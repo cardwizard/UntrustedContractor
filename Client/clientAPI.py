@@ -28,8 +28,8 @@ def get_data(client_name, table_name, schema):
     return data
 
 
-def get_data_from_publisher(client_name_, table_name, schema_):
-    encrypted_data = get_data(client_name_, table_name, schema=schema_)
+def get_data_from_publisher(client_name, table_name, schema):
+    encrypted_data = get_data(client_name, table_name, schema=schema)
     print(decrypt_data(encrypted_data))
 
 
