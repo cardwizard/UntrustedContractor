@@ -20,10 +20,23 @@ def unregister_client(client_name):
 
 def add_new_table(client_name, table_name, schema):
     args = {"publisher_name": client_name, "table_name": table_name, "alchemy_schema": schema}
-    response = post(url.format("add_new_table"), data=args)
+    response = post(url.format("define_new_table"), data=args)
+    print(response.status_code, response.json())
+
+
+def delete_table(client_name, table_name, schema):
+    args = {"publisher_name": client_name, "table_name": table_name, "alchemy_schema": schema}
+    response = post(url.format("drop_table"), data=args)
     print(response.status_code, response.json())
 
 
 if __name__ == '__main__':
-    # register_client("UMD")
-    add_new_table("UMD", "Student", dumps([x.get_object() for x in Student]))
+    client_name_ = "UMD"
+
+    register_client(client_name_)
+    schema_ = dumps([x.get_object() for x in Student])
+
+    add_new_table(client_name_, "Student", schema=schema_)
+    delete_table(client_name_, "Student", schema=schema_)
+
+    unregister_client(client_name_)

@@ -5,6 +5,7 @@ from Contractor.constants import POSTGRES_CONNECTION
 
 column_map = {"Integer": Integer, "String": String, "Boolean": Boolean, "JSON": JSON}
 
+
 def create_db(db_name) -> bool:
     """
     Function to create a database in the background if it does not exist.
@@ -55,6 +56,32 @@ def create_table(attributes, db_name):
     NewSchema = type("NewSchema", (Base,), attributes)
     engine = create_engine(POSTGRES_CONNECTION.format(db_name), echo=True)
 
-    Base.metadata.create_all(engine)
+    if engine.dialect.has_table(engine, attributes["__tablename__"]):
+        return -1, "Table exists"
 
-    return True
+    try:
+        Base.metadata.create_all(bind=engine, tables=[NewSchema.__table__])
+        return 0, "Table created successfully"
+
+    except Exception as e:
+        print(e.__str__())
+    return 1, "Table creation failed"
+
+
+def drop_table(attributes, db_name):
+    Base = declarative_base()
+    NewSchema = type("NewSchema", (Base,), attributes)
+
+    engine = create_engine(POSTGRES_CONNECTION.format(db_name), echo=True)
+
+    if not engine.dialect.has_table(engine, attributes["__tablename__"]):
+        return -1, "Table does not exist"
+
+    try:
+        Base.metadata.drop_all(bind=engine, tables=[NewSchema.__table__])
+        return 0, "Table dropped successfully"
+
+    except Exception as e:
+        print(e.__str__())
+
+    return 1, "Table deletion failed"
