@@ -112,3 +112,22 @@ def push_data(attributes, db_name, data_to_add):
     session.add_all(add_list)
     session.commit()
     session.close()
+
+
+def get_data(attributes, db_name):
+    NewSchema, Base = get_schema(attributes)
+    session = get_session(db_name)
+    data = []
+
+    information = session.query(NewSchema).all()
+    del attributes["__tablename__"]
+
+    for info_ob in information:
+        new_ob = {}
+
+        for attr in attributes:
+            new_ob[attr] = getattr(info_ob, attr)
+        data.append(new_ob)
+
+    return data
+

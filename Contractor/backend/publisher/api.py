@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify
 from flask_restful import reqparse
 from Contractor.backend.publisher.db_operations import *
-from json import loads
+from json import loads, dumps
 
 publisher_api = Blueprint("publisher_api", __name__, url_prefix='/v1/publisher')
 
@@ -70,3 +70,17 @@ def add_data_():
     stat = push_data(attributes, args["publisher_name"], args["data"])
 
     return jsonify(status=stat)
+
+
+@publisher_api.route("/get_data", methods=["POST"])
+def get_data_():
+    parser = reqparse.RequestParser()
+    parser.add_argument("publisher_name", type=str)
+    parser.add_argument("table_name", type=str)
+    parser.add_argument("alchemy_schema", type=loads)
+
+    args = parser.parse_args()
+    attributes = build_schema(args["table_name"], args["alchemy_schema"])
+    info = get_data(attributes, args["publisher_name"])
+
+    return jsonify(status=True, data=dumps(info))
