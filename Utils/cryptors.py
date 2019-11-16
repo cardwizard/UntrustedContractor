@@ -17,6 +17,8 @@ class Cryptor:
         decrypted_data = {}
 
         for key, value in data.items():
-            decrypted_data[key] = self.fernet.decrypt(value.encode()).decode()
-
+            try:
+                decrypted_data[key] = self.fernet.decrypt(value.encode()).decode()
+            except:
+                decrypted_data[key] = value
         return decrypted_data
