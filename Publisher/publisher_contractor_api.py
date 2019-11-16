@@ -73,7 +73,13 @@ if __name__ == '__main__':
     # add_new_table(client_name_, table_name_, schema=schema_)
 
     # Create some dummy data
-    data_to_add = [{"name": "Aadesh", "age": 25, "department": "CMSC", "registered": True}]
+    with open("../Data/dataNov-16-2019.csv") as f:
+        data = f.read()
+
+    data_to_add = []
+    for d in data.splitlines()[1:]:
+        info = d.strip().split(",")
+        data_to_add.append({"name": info[0], "age": info[1], "department": info[2], "registered": info[3]})
 
     # Encrypt the data
     encrypted_data = encrypt_data(data_to_add)
