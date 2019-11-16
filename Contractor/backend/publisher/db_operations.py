@@ -117,20 +117,30 @@ def push_data(attributes, db_name, data_to_add):
     session.close()
 
 
-def get_data(attributes, db_name):
-    NewSchema, Base = get_schema(attributes)
-    session = get_session(db_name)
+def convert_query_to_data(query, attributes):
     data = []
-
-    information = session.query(NewSchema).all()
     del attributes["__tablename__"]
 
-    for info_ob in information:
+    for info_ob in query:
         new_ob = {}
 
         for attr in attributes:
             new_ob[attr] = getattr(info_ob, attr)
         data.append(new_ob)
-
     return data
+
+
+def get_data(attributes, db_name):
+    NewSchema, Base = get_schema(attributes)
+    session = get_session(db_name)
+
+    information = session.query(NewSchema).all()
+    return convert_query_to_data(information, attributes)
+
+
+def get_data_by_ids(attributes, db_name, id_list):
+    NewSchema, Base = get_schema(attributes)
+    session = get_session(db_name)
+    information = session.query(NewSchema).filter(NewSchema.id.in_(id_list)).all()
+    return convert_query_to_data(information, attributes)
 

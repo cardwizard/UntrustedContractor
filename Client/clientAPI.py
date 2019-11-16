@@ -37,6 +37,17 @@ def get_data(client_name, table_name, schema):
     return data
 
 
+def get_data_by_id(client_name, table_name, schema, id_list):
+    args = {"publisher_name": client_name, "table_name": table_name, "alchemy_schema": schema, "id_list": dumps(id_list)}
+    response = post(url.format("get_data_by_id"), data=args)
+
+    data = []
+    if response.json().get("status"):
+        data = loads(response.json().get("data"))
+
+    return data
+
+
 def get_data_from_publisher(client_name, table_name, schema):
     encrypted_data = get_data(client_name, table_name, schema=schema)
     return decrypt_data(encrypted_data)
@@ -46,5 +57,6 @@ if __name__ == '__main__':
     client_name_ = "UMD"
     table_name_ = "Student"
     schema_ = dumps([x.get_object() for x in Student])
-    output = get_data_from_publisher(client_name_, table_name_, schema_)
-    print(pd.DataFrame(output).department.unique())
+    # output = get_data_from_publisher(client_name_, table_name_, schema_)
+    # print(pd.DataFrame(output).department.unique())
+    print(decrypt_data(get_data_by_id(client_name_, table_name_, schema_, [1, 2, 3])))
