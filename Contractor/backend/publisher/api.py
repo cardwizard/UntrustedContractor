@@ -56,3 +56,17 @@ def drop_table_():
     stat = drop_table(attributes, args["publisher_name"])
     return jsonify(status=stat)
 
+
+@publisher_api.route("/add_data", methods=["POST"])
+def add_data_():
+    parser = reqparse.RequestParser()
+    parser.add_argument("publisher_name", type=str)
+    parser.add_argument("table_name", type=str)
+    parser.add_argument("alchemy_schema", type=loads)
+    parser.add_argument("data", type=loads)
+
+    args = parser.parse_args()
+    attributes = build_schema(args["table_name"], args["alchemy_schema"])
+    stat = push_data(attributes, args["publisher_name"], args["data"])
+
+    return jsonify(status=stat)

@@ -1,12 +1,13 @@
 from sqlalchemy_utils import database_exists, create_database, drop_database
 from sqlalchemy import *
 from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
 from Contractor.constants import POSTGRES_CONNECTION
 
 column_map = {"Integer": Integer, "String": String, "Boolean": Boolean, "JSON": JSON}
 
 
-def create_db(db_name) -> bool:
+def create_db(db_name):
     """
     Function to create a database in the background if it does not exist.
 
@@ -15,13 +16,13 @@ def create_db(db_name) -> bool:
     """
     engine = create_engine(POSTGRES_CONNECTION.format(db_name))
     if database_exists(engine.url):
-        return False
+        return False, "Database exists already"
 
     create_database(engine.url)
-    return True
+    return True, "Database created successfully"
 
 
-def drop_db(db_name) -> bool:
+def drop_db(db_name):
     """
 
     :param db_name:
@@ -29,10 +30,10 @@ def drop_db(db_name) -> bool:
     """
     engine = create_engine(POSTGRES_CONNECTION.format(db_name))
     if not database_exists(engine.url):
-        return False
+        return False, "Database does not exist"
 
     drop_database(engine.url)
-    return True
+    return True, "Database dropped successfully"
 
 
 def build_schema(table_name, attributes):
@@ -50,10 +51,15 @@ def build_schema(table_name, attributes):
     return new_attributes
 
 
-def create_table(attributes, db_name):
-
+def get_schema(attributes):
     Base = declarative_base()
     NewSchema = type("NewSchema", (Base,), attributes)
+    return NewSchema, Base
+
+
+def create_table(attributes, db_name):
+
+    NewSchema, Base = get_schema(attributes)
     engine = create_engine(POSTGRES_CONNECTION.format(db_name), echo=True)
 
     if engine.dialect.has_table(engine, attributes["__tablename__"]):
@@ -65,14 +71,14 @@ def create_table(attributes, db_name):
 
     except Exception as e:
         print(e.__str__())
+
     return 1, "Table creation failed"
 
 
 def drop_table(attributes, db_name):
-    Base = declarative_base()
-    NewSchema = type("NewSchema", (Base,), attributes)
 
-    engine = create_engine(POSTGRES_CONNECTION.format(db_name), echo=True)
+    NewSchema, Base = get_schema(attributes)
+    engine = create_engine(POSTGRES_CONNECTION.format(db_name), echo=False)
 
     if not engine.dialect.has_table(engine, attributes["__tablename__"]):
         return -1, "Table does not exist"
@@ -85,3 +91,24 @@ def drop_table(attributes, db_name):
         print(e.__str__())
 
     return 1, "Table deletion failed"
+
+
+def get_session(db_name):
+    engine = create_engine(POSTGRES_CONNECTION.format(db_name), echo=False)
+    Session = sessionmaker(bind=engine)
+    session = Session()
+    return session
+
+
+def push_data(attributes, db_name, data_to_add):
+    NewSchema, Base = get_schema(attributes)
+
+    session = get_session(db_name)
+    add_list = []
+
+    for data in data_to_add:
+        add_list.append(NewSchema(**data))
+
+    session.add_all(add_list)
+    session.commit()
+    session.close()
