@@ -36,7 +36,6 @@ def get_data_by_id_():
 
     args = parser.parse_args()
     attributes = build_schema(args["table_name"], args["alchemy_schema"])
-    print(args["id_list"])
     info = get_data_by_ids(attributes, args["publisher_name"], args["id_list"])
 
     return jsonify(status=True, data=dumps(info))

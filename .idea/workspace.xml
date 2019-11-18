@@ -5,7 +5,8 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Client/clientAPI.py" beforeDir="false" afterPath="$PROJECT_DIR$/Client/clientAPI.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Contractor/backend/client/api.py" beforeDir="false" afterPath="$PROJECT_DIR$/Contractor/backend/client/api.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Contractor/backend/publisher/db_operations.py" beforeDir="false" afterPath="$PROJECT_DIR$/Contractor/backend/publisher/db_operations.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Publisher/projection_generator.py" beforeDir="false" afterPath="$PROJECT_DIR$/Publisher/projection_generator.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utils/models/schemas.py" beforeDir="false" afterPath="$PROJECT_DIR$/Utils/models/schemas.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -27,7 +28,7 @@
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="PropertiesComponent">
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/Data" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="PyConsoleOptionsProvider">
@@ -169,9 +170,9 @@
     <recent_temporary>
       <list>
         <item itemvalue="Python.clientAPI" />
-        <item itemvalue="Python.publisher_contractor_api" />
-        <item itemvalue="Python.runserver" />
         <item itemvalue="Python.key_server" />
+        <item itemvalue="Python.runserver" />
+        <item itemvalue="Python.publisher_contractor_api" />
         <item itemvalue="Python.schemas" />
       </list>
     </recent_temporary>

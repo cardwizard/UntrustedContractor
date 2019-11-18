@@ -40,6 +40,7 @@ class Projection:
         if self.data_type == "int":
             schema = [SQLObject("start", Types.INT), SQLObject("end", Types.INT), SQLObject("proj_id", Types.INT, True)]
             return dumps([x.get_object() for x in schema]), self._int_projections(data, splits)
+
         if self.data_type == "str":
             schema = [SQLObject("startswith", Types.STR), SQLObject("proj_id", Types.INT, True)]
             return dumps([x.get_object() for x in schema]), self._str_projections(data, splits)
