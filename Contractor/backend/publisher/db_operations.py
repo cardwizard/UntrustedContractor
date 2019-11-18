@@ -3,6 +3,10 @@ from sqlalchemy import *
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from Contractor.constants import POSTGRES_CONNECTION
+from pathlib import Path
+from typing import List
+from json import dump
+
 
 column_map = {"Integer": Integer, "String": String, "Boolean": Boolean, "JSON": JSON, "BINARY": LargeBinary}
 
@@ -144,3 +148,13 @@ def get_data_by_ids(attributes, db_name, id_list):
     information = session.query(NewSchema).filter(NewSchema.id.in_(id_list)).all()
     return convert_query_to_data(information, attributes)
 
+
+def cache_schema_locally(client_name: str, table_name: str, projection_name: str, schema: List):
+    path = Path("Projections").joinpath(client_name).joinpath(table_name)
+    print(path)
+
+    if not path.exists():
+        path.mkdir(parents=True)
+
+    with open(path.joinpath("projection_{}.json".format(projection_name)), "w") as f:
+        dump(schema, f)

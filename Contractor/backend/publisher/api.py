@@ -77,6 +77,7 @@ def add_data_():
 def add_projection_():
     parser = reqparse.RequestParser()
     parser.add_argument("publisher_name", type=str)
+    parser.add_argument("table_name", type=str)
     parser.add_argument("column", type=str)
     parser.add_argument("schema", type=loads)
     parser.add_argument("data", type=loads)
@@ -86,5 +87,7 @@ def add_projection_():
     create_table(attributes, args["publisher_name"])
 
     attributes = build_schema("projection_{}".format(args["column"]), args["schema"])
+
+    cache_schema_locally(args["publisher_name"], args["table_name"], args["column"], args["schema"])
     stat = push_data(attributes, args["publisher_name"], args["data"])
     return jsonify(status=stat, message="Table creation_successful")

@@ -57,8 +57,10 @@ if __name__ == '__main__':
     client_name_ = "UMD"
     table_name_ = "Student"
     schema_ = Student.get_schema()
-    # output = get_data_from_publisher(client_name_, table_name_, schema_)
-    # print(pd.DataFrame(output).department.unique())
+
     print(decrypt_data(get_data_by_id(client_name_, table_name_, schema_, [1, 2, 3])))
-    age_projection_schema = SQLSchema([SQLObject("start", Types.INT), SQLObject("end", Types.INT), SQLObject("proj_id", Types.INT, True)])
+    age_projection_schema = SQLSchema([SQLObject("start", Types.INT),
+                                       SQLObject("end", Types.INT),
+                                       SQLObject("proj_id", Types.INT, True)])
+
     print(get_data(client_name_, table_name="projection_age", schema=age_projection_schema.get_schema()))

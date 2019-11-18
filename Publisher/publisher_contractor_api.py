@@ -88,8 +88,9 @@ def create_projections(data_to_add):
             {"column": "registered", "schema": schema_reg, "projection": projection_registered}]
 
 
-def add_projection(client_name, column_name, schema, data_list):
-    args = {"publisher_name": client_name, "column": column_name, "schema": schema, "data": dumps(data_list)}
+def add_projection(client_name, table_name, column_name, schema, data_list):
+    args = {"publisher_name": client_name, "table_name": table_name, "column": column_name, "schema": schema,
+            "data": dumps(data_list)}
     response = post(url.format("add_projection"), data=args)
     print(response.status_code, response.json())
 
@@ -133,5 +134,5 @@ if __name__ == '__main__':
     projections = create_projections(data_to_add)
 
     for proj in projections:
-        add_projection(client_name=client_name_, column_name=proj["column"], schema=proj["schema"],
-                       data_list=proj["projection"])
+        add_projection(client_name=client_name_, table_name=table_name_, column_name=proj["column"],
+                       schema=proj["schema"], data_list=proj["projection"])

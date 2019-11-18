@@ -1,0 +1,1 @@
+[{"Column": "start", "Type": "Integer", "Primary Key": false}, {"Column": "end", "Type": "Integer", "Primary Key": false}, {"Column": "proj_id", "Type": "Integer", "Primary Key": true}]
