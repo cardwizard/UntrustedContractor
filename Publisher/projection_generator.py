@@ -1,5 +1,6 @@
-from Utils.models.schemas import SQLObject, Types
+from Utils.models.schemas import SQLObject, Types, SQLSchema
 from json import dumps
+
 
 class Projection:
     def __init__(self, data_type):
@@ -38,13 +39,15 @@ class Projection:
     def create_projections(self, data, splits):
 
         if self.data_type == "int":
-            schema = [SQLObject("start", Types.INT), SQLObject("end", Types.INT), SQLObject("proj_id", Types.INT, True)]
-            return dumps([x.get_object() for x in schema]), self._int_projections(data, splits)
+            schema = SQLSchema([SQLObject("start", Types.INT), SQLObject("end", Types.INT),
+                                SQLObject("proj_id", Types.INT, True)])
+            return schema.get_schema(), self._int_projections(data, splits)
 
         if self.data_type == "str":
-            schema = [SQLObject("startswith", Types.STR), SQLObject("proj_id", Types.INT, True)]
-            return dumps([x.get_object() for x in schema]), self._str_projections(data, splits)
+            schema = SQLSchema([SQLObject("startswith", Types.STR), SQLObject("proj_id", Types.INT, True)])
+            return schema.get_schema(), self._str_projections(data, splits)
 
         if self.data_type == "identity":
-            schema = [SQLObject("value", Types.STR), SQLObject("proj_id", Types.INT, True)]
-            return dumps([x.get_object() for x in schema]), [{"value": d["column"], "proj_id": d["proj_id"]} for d in data]
+            schema = SQLSchema([SQLObject("value", Types.STR), SQLObject("proj_id", Types.INT, True)])
+            return schema.get_schema(), [{"value": d["column"], "proj_id": d["proj_id"]}
+                                         for d in data]

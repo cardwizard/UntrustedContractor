@@ -1,5 +1,5 @@
 from requests import post, get
-from Utils.models.schemas import SQLObject, Types
+from Utils.models.schemas import SQLObject, Types, SQLSchema
 from json import dumps, loads
 from Utils.cryptors import Cryptor
 from Utils.key_operations import get_key
@@ -8,11 +8,11 @@ from Publisher.projection_generator import Projection
 url = "http://localhost:10000/v1/publisher/{}"
 
 # Defining a table class
-Student = [SQLObject("id", Types.INT),
+Student = SQLSchema([SQLObject("id", Types.INT),
            SQLObject("name", Types.STR, True),
            SQLObject("age", Types.STR),
            SQLObject("department", Types.STR),
-           SQLObject("registered", Types.STR)]
+           SQLObject("registered", Types.STR)])
 
 
 def register_client(client_name):
@@ -101,11 +101,11 @@ if __name__ == '__main__':
     table_name_ = "Student"
 
     # Start from a clean slate
-    unregister_client(client_name_)
+    # unregister_client(client_name_)
     register_client(client_name_)
 
     # Create schema in our new format
-    schema_ = dumps([x.get_object() for x in Student])
+    schema_ = Student.get_schema()
     add_new_table(client_name_, table_name_, schema=schema_)
 
     # Create some dummy data

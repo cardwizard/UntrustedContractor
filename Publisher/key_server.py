@@ -22,6 +22,7 @@ def serve_key():
 
         with open("key.txt", "wb") as f:
             f.write(new_key)
+
         in_memory_key = new_key
 
     return jsonify(key=in_memory_key.decode())

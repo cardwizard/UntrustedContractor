@@ -5,7 +5,7 @@ from sqlalchemy.orm import sessionmaker
 from Contractor.constants import POSTGRES_CONNECTION
 from pathlib import Path
 from typing import List
-from json import dump
+from json import dump, load
 
 
 column_map = {"Integer": Integer, "String": String, "Boolean": Boolean, "JSON": JSON, "BINARY": LargeBinary}
@@ -151,10 +151,21 @@ def get_data_by_ids(attributes, db_name, id_list):
 
 def cache_schema_locally(client_name: str, table_name: str, projection_name: str, schema: List):
     path = Path("Projections").joinpath(client_name).joinpath(table_name)
-    print(path)
 
     if not path.exists():
         path.mkdir(parents=True)
 
     with open(path.joinpath("projection_{}.json".format(projection_name)), "w") as f:
         dump(schema, f)
+
+
+def get_local_schema(client_name: str, table_name: str, projection_name):
+    path = Path("Projections").joinpath(client_name).joinpath(table_name).joinpath("projection_{}.json".format(projection_name))
+
+    if not path.exists():
+        return None
+
+    with open(path, "r") as f:
+        data = load(f)
+        
+    return data
