@@ -1,5 +1,6 @@
 from sqlalchemy_utils import database_exists, create_database, drop_database
 from sqlalchemy import *
+from sqlalchemy.orm import load_only
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from Contractor.constants import POSTGRES_CONNECTION
@@ -121,7 +122,7 @@ def push_data(attributes, db_name, data_to_add):
     session.close()
 
 
-def convert_query_to_data(query, attributes):
+def convert_query_to_data(query, attributes, column_list=None):
     data = []
     del attributes["__tablename__"]
 
@@ -129,7 +130,10 @@ def convert_query_to_data(query, attributes):
         new_ob = {}
 
         for attr in attributes:
+            if column_list and attr not in column_list:
+                continue
             new_ob[attr] = getattr(info_ob, attr)
+
         data.append(new_ob)
     return data
 
@@ -142,11 +146,17 @@ def get_data(attributes, db_name):
     return convert_query_to_data(information, attributes)
 
 
-def get_data_by_ids(attributes, db_name, id_list):
+def get_data_by_ids(attributes, db_name, id_list, column_list=None):
     NewSchema, Base = get_schema(attributes)
     session = get_session(db_name)
-    information = session.query(NewSchema).filter(NewSchema.id.in_(id_list)).all()
-    return convert_query_to_data(information, attributes)
+
+    if not column_list:
+        information = session.query(NewSchema).filter(NewSchema.id.in_(id_list)).all()
+        return convert_query_to_data(information, attributes)
+
+    column_list += ["id"]
+    information = session.query(NewSchema).options(load_only(*column_list)).filter(NewSchema.id.in_(id_list)).all()
+    return convert_query_to_data(information, attributes, column_list)
 
 
 def cache_schema_locally(client_name: str, table_name: str, projection_name: str, schema: List):

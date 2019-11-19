@@ -48,8 +48,8 @@ def get_data_by_id(client_name, table_name, schema, id_list):
     return data
 
 
-def get_data_by_projections(client_name, table_name, column_name):
-    args = {"publisher_name": client_name, "table_name": table_name, "column_name": column_name,
+def get_data_by_projections(client_name, table_name, column_list):
+    args = {"publisher_name": client_name, "table_name": table_name, "column_list": dumps(column_list),
             "alchemy_schema": Student.get_schema()}
     response = post(url.format("get_data_by_projections"), data=args)
     return decrypt_data(loads(response.json().get("data")))
@@ -65,7 +65,7 @@ if __name__ == '__main__':
     table_name_ = "Student"
     schema_ = Student.get_schema()
 
-    print(get_data_by_projections(client_name_, table_name_, "age"))
+    print(get_data_by_projections(client_name_, table_name_, ["age", "department"]))
 
     # print(decrypt_data(get_data_by_id(client_name_, table_name_, schema_, [1, 2, 3])))
     # age_projection_schema = SQLSchema([SQLObject("start", Types.INT),
