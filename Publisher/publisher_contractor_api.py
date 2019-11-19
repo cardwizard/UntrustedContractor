@@ -123,7 +123,8 @@ if __name__ == '__main__':
 
     for id, d in enumerate(data):
         info = d.strip().split(",")
-        data_to_add.append({"id": id, "name": info[0], "age": info[1], "department": info[2], "registered": info[3]})
+        data_to_add.append({"id": id, "name": info[0], "age": info[1], "department": info[2],
+                            "registered": info[3]})
 
     # Encrypt the data
     encrypted_data = encrypt_data(data_to_add, ["id"])

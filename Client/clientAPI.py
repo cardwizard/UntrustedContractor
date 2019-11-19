@@ -48,6 +48,13 @@ def get_data_by_id(client_name, table_name, schema, id_list):
     return data
 
 
+def get_data_by_projections(client_name, table_name, column_name):
+    args = {"publisher_name": client_name, "table_name": table_name, "column_name": column_name,
+            "alchemy_schema": Student.get_schema()}
+    response = post(url.format("get_data_by_projections"), data=args)
+    return decrypt_data(loads(response.json().get("data")))
+
+
 def get_data_from_publisher(client_name, table_name, schema):
     encrypted_data = get_data(client_name, table_name, schema=schema)
     return decrypt_data(encrypted_data)
@@ -58,9 +65,11 @@ if __name__ == '__main__':
     table_name_ = "Student"
     schema_ = Student.get_schema()
 
-    print(decrypt_data(get_data_by_id(client_name_, table_name_, schema_, [1, 2, 3])))
-    age_projection_schema = SQLSchema([SQLObject("start", Types.INT),
-                                       SQLObject("end", Types.INT),
-                                       SQLObject("proj_id", Types.INT, True)])
+    print(get_data_by_projections(client_name_, table_name_, "age"))
 
-    print(get_data(client_name_, table_name="projection_age", schema=age_projection_schema.get_schema()))
+    # print(decrypt_data(get_data_by_id(client_name_, table_name_, schema_, [1, 2, 3])))
+    # age_projection_schema = SQLSchema([SQLObject("start", Types.INT),
+    #                                    SQLObject("end", Types.INT),
+    #                                    SQLObject("proj_id", Types.INT, True)])
+    #
+    # print(get_data(client_name_, table_name="projection_age", schema=age_projection_schema.get_schema()))
