@@ -29,6 +29,7 @@ def get_id_list_from_projection(client_name: str, table_name, column_name):
 
 def filter_by_where(client_name, table_name, where_query):
 
+    id_list_ = []
     for objects in where_query:
 
         column_name = objects["column_name"]
@@ -45,4 +46,10 @@ def filter_by_where(client_name, table_name, where_query):
             information = session.query(ProjectionSchema).filter(getattr(ProjectionSchema, "start") < value).filter(getattr(ProjectionSchema, "end") > value)
 
             converted_data = convert_query_to_data(information, attributes)
-            return [x["proj_id"] for x in converted_data]
+            id_list_.append([x["proj_id"] for x in converted_data])
+
+    id_1 = id_list_[0]
+    for id_list in id_list_[1:]:
+        id_1 = list(set(id_list) & set(id_1))
+
+    return id_1
