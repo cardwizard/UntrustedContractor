@@ -138,12 +138,17 @@ def convert_query_to_data(query, attributes, column_list=None):
     return data
 
 
-def get_data(attributes, db_name):
+def get_data(attributes, db_name, column_list=None):
     NewSchema, Base = get_schema(attributes)
     session = get_session(db_name)
 
-    information = session.query(NewSchema).all()
-    return convert_query_to_data(information, attributes)
+    if not column_list:
+        information = session.query(NewSchema).all()
+        return convert_query_to_data(information, attributes)
+    column_list += ["id"]
+
+    information = session.query(NewSchema).options(load_only(*column_list)).all()
+    return convert_query_to_data(information, attributes, column_list)
 
 
 def get_data_by_ids(attributes, db_name, id_list, column_list=None):

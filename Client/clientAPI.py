@@ -60,16 +60,27 @@ def get_data_from_publisher(client_name, table_name, schema):
     return decrypt_data(encrypted_data)
 
 
+def test_where_clause(client_name, table_name, schema, query):
+    args = {"publisher_name": client_name, "table_name": table_name, "alchemy_schema": schema, "query": query}
+    response = post(url.format("where"), data=args)
+
+    data = []
+    if response.json().get("status"):
+        data = loads(response.json().get("data"))
+
+    return data
+
+
 if __name__ == '__main__':
     client_name_ = "UMD"
     table_name_ = "Student"
     schema_ = Student.get_schema()
 
-    print(get_data_by_projections(client_name_, table_name_, ["age", "department"]))
+    # print(get_data_by_projections(client_name_, table_name_, ["age", "department"]))
+    query = {"where": [
+                {"column_name": "age",
+                 "attributes": {"matching_type": "equals", "value": 24}
+                }
+            ]}
 
-    # print(decrypt_data(get_data_by_id(client_name_, table_name_, schema_, [1, 2, 3])))
-    # age_projection_schema = SQLSchema([SQLObject("start", Types.INT),
-    #                                    SQLObject("end", Types.INT),
-    #                                    SQLObject("proj_id", Types.INT, True)])
-    #
-    # print(get_data(client_name_, table_name="projection_age", schema=age_projection_schema.get_schema()))
+    print(decrypt_data(test_where_clause(client_name_, table_name_, schema_, dumps(query))))
