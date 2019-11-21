@@ -79,11 +79,8 @@ if __name__ == '__main__':
     # print(get_data_by_projections(client_name_, table_name_, ["age", "department"]))
     query = {"where": [
                 {"column_name": "age",
-                 "attributes": {"matching_type": "equals", "value": 24}
-                },
-                {"column_name": "age",
-                 "attributes": {"matching_type": "equals", "value": 25}
-                 }
+                 "attributes": {"matching_type": "lesser_than", "value": 21}
+                }
             ]}
 
     print(decrypt_data(test_where_clause(client_name_, table_name_, schema_, dumps(query))))

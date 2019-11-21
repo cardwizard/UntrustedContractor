@@ -123,6 +123,9 @@ def push_data(attributes, db_name, data_to_add):
 
 
 def convert_query_to_data(query, attributes, column_list=None):
+    if query is None:
+        return []
+
     data = []
     del attributes["__tablename__"]
 

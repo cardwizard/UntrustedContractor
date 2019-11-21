@@ -43,10 +43,25 @@ def filter_by_where(client_name, table_name, where_query):
 
         if where_attr["matching_type"] == "equals":
             value = where_attr["value"]
-            information = session.query(ProjectionSchema).filter(getattr(ProjectionSchema, "start") < value).filter(getattr(ProjectionSchema, "end") > value)
+            information = session.query(ProjectionSchema)\
+                .filter(getattr(ProjectionSchema, "start") < value)\
+                .filter(getattr(ProjectionSchema, "end") > value)
 
-            converted_data = convert_query_to_data(information, attributes)
-            id_list_.append([x["proj_id"] for x in converted_data])
+        elif where_attr["matching_type"] == "greater_than":
+            value = where_attr["value"]
+            information = session.query(ProjectionSchema) \
+                .filter(getattr(ProjectionSchema, "start") >= value)
+
+        elif where_attr["matching_type"] == "lesser_than":
+            value = where_attr["value"]
+            information = session.query(ProjectionSchema) \
+                .filter(getattr(ProjectionSchema, "end") < value)
+
+        else:
+            information = None
+
+        converted_data = convert_query_to_data(information, attributes)
+        id_list_.append([x["proj_id"] for x in converted_data])
 
     id_1 = id_list_[0]
     for id_list in id_list_[1:]:

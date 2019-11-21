@@ -74,7 +74,6 @@ def where_clause():
 
     args = parser.parse_args()
     attributes = build_schema(args["table_name"], args["alchemy_schema"])
-    print(args["query"])
 
     if "where" in args["query"]:
         id_list = filter_by_where(args["publisher_name"], args["table_name"], args["query"]["where"])
