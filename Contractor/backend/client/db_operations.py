@@ -27,19 +27,22 @@ def get_id_list_from_projection(client_name: str, table_name, column_name):
     return id_list
 
 
-def filter_by_where(client_name, table_name, where_query):
+class Filter:
+    def __init__(self, id_list=None):
+        self.id_list = id_list
 
-    id_list_ = []
-    for objects in where_query:
+    @staticmethod
+    def _guess_data_type(local_schema):
 
-        column_name = objects["column_name"]
-        where_attr = objects["attributes"]
+        if len(local_schema) == 0:
+            return "UNKNOWN"
 
-        col_schema = get_local_schema(client_name, table_name, column_name)
-        attributes = build_schema("projection_{}".format(column_name), col_schema)
+        return local_schema[0]["Type"]
 
-        ProjectionSchema, Base = get_schema(attributes)
+    def _filter_by_int(self, client_name, attributes, where_attr):
+
         session = get_session(client_name)
+        ProjectionSchema, Base = get_schema(attributes)
 
         if where_attr["matching_type"] == "equals":
             value = where_attr["value"]
@@ -61,10 +64,37 @@ def filter_by_where(client_name, table_name, where_query):
             information = None
 
         converted_data = convert_query_to_data(information, attributes)
-        id_list_.append([x["proj_id"] for x in converted_data])
 
-    id_1 = id_list_[0]
-    for id_list in id_list_[1:]:
-        id_1 = list(set(id_list) & set(id_1))
+        id_list_ = [x["proj_id"] for x in converted_data]
 
-    return id_1
+        return self._merge(id_list_)
+
+    def _merge(self, id_list):
+
+        if self.id_list is None:
+            self.id_list = id_list
+        else:
+            self.id_list = list(set(self.id_list) & id_list)
+
+        return Filter(self.id_list)
+
+    def filter_by_where(self, client_name, table_name, column_name, where_attr):
+
+        col_schema = get_local_schema(client_name, table_name, column_name)
+        attributes = build_schema("projection_{}".format(column_name), col_schema)
+
+        if self._guess_data_type(col_schema) == "Integer":
+            return self._filter_by_int(client_name, attributes, where_attr)
+
+    def get_id_list(self):
+        return self.id_list
+
+
+def filter_by_where(client_name, table_name, where_query):
+
+    f = Filter()
+
+    for objects in where_query:
+        f = f.filter_by_where(client_name, table_name, objects["column_name"], objects["attributes"])
+
+    return f.get_id_list()
