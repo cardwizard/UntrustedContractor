@@ -1,0 +1,25 @@
+
+#1. SELECT * FROM Student WHERE age > 21
+query = {"where": [
+                {"column_name": "age",
+                 "attributes": {"matching_type": "greater_than", "value": 21}
+                }
+            ]}
+#2. SELECT * FROM Student WHERE name LIKE 'A%' and age < 22
+query = {"where": [
+                {"column_name": "age",
+                 "attributes": {"matching_type": "lesser_than", "value": 22}
+                },
+                {"column_name": "name",
+                 "attributes": {"matching_type": "starts_wth", "value": 'A'}
+                }
+            ]}
+#3. SELECT * FROM Student WHERE name LIKE 'A%' and age = 22
+query = {"where": [
+                {"column_name": "age",
+                 "attributes": {"matching_type": "equals", "value": 22}
+                },
+                {"column_name": "name",
+                 "attributes": {"matching_type": "starts_wth", "value": 'A'}
+                }
+            ]}

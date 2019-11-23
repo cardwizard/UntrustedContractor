@@ -77,10 +77,25 @@ if __name__ == '__main__':
     schema_ = Student.get_schema()
 
     # print(get_data_by_projections(client_name_, table_name_, ["age", "department"]))
-    query = {"where": [
+    query1 = {"where": [
                 {"column_name": "age",
-                 "attributes": {"matching_type": "lesser_than", "value": 21}
+                 "attributes": {"matching_type": "lesser_than", "value": 22}
                 }
             ]}
+
+    query2 = {"where": [
+        {"column_name": "name",
+         "attributes": {"matching_type": "starts_with", "value": 'A'}
+         }
+    ]}
+
+    query = {"where": [
+        {"column_name": "name",
+         "attributes": {"matching_type": "starts_with", "value": 'A'}
+         },
+        {"column_name": "age",
+         "attributes": {"matching_type": "lesser_than", "value": 22}
+         }
+    ]}
 
     print(decrypt_data(test_where_clause(client_name_, table_name_, schema_, dumps(query))))
