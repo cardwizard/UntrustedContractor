@@ -77,6 +77,5 @@ def where_clause():
 
     if "where" in args["query"]:
         id_list = filter_by_where(args["publisher_name"], args["table_name"], args["query"]["where"])
-
         info = get_data_by_ids(attributes, args["publisher_name"], id_list)
         return jsonify(status=True, data=dumps(info))

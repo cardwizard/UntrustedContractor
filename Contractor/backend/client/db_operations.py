@@ -53,12 +53,12 @@ class Filter:
         elif where_attr["matching_type"] == "greater_than":
             value = where_attr["value"]
             information = session.query(ProjectionSchema) \
-                .filter(getattr(ProjectionSchema, "start") >= value)
+                .filter(getattr(ProjectionSchema, "end") > value)
 
         elif where_attr["matching_type"] == "lesser_than":
             value = where_attr["value"]
             information = session.query(ProjectionSchema) \
-                .filter(getattr(ProjectionSchema, "end") < value)
+                .filter(getattr(ProjectionSchema, "start") < value)
 
         else:
             information = None
@@ -69,13 +69,28 @@ class Filter:
 
         return self._merge(id_list_)
 
-    def _merge(self, id_list):
+    def _filter_by_str(self, client_name, attributes, where_attr):
+        session = get_session(client_name)
+        ProjectionSchema, Base = get_schema(attributes)
 
+        if where_attr["matching_type"] == "starts_with":
+            value = where_attr["value"]
+            information = session.query(ProjectionSchema) \
+                .filter(getattr(ProjectionSchema, "startswith").contains(value))
+        else:
+            information = None
+
+        converted_data = convert_query_to_data(information, attributes)
+
+        id_list_ = [x["proj_id"] for x in converted_data]
+
+        return self._merge(id_list_)
+
+    def _merge(self, id_list):
         if self.id_list is None:
             self.id_list = id_list
         else:
-            self.id_list = list(set(self.id_list) & id_list)
-
+            self.id_list = list(set(self.id_list) & set(id_list))
         return Filter(self.id_list)
 
     def filter_by_where(self, client_name, table_name, column_name, where_attr):
@@ -86,6 +101,9 @@ class Filter:
         if self._guess_data_type(col_schema) == "Integer":
             return self._filter_by_int(client_name, attributes, where_attr)
 
+        elif self._guess_data_type(col_schema) == "String":
+            return self._filter_by_str(client_name, attributes, where_attr)
+
     def get_id_list(self):
         return self.id_list
 
@@ -93,8 +111,6 @@ class Filter:
 def filter_by_where(client_name, table_name, where_query):
 
     f = Filter()
-
     for objects in where_query:
         f = f.filter_by_where(client_name, table_name, objects["column_name"], objects["attributes"])
-
     return f.get_id_list()
