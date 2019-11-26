@@ -3,3 +3,4 @@ venv
 key.txt
 Data/
 *.pyc
+__pycache__

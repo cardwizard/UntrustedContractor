@@ -9,6 +9,7 @@ class Types(Enum):
     BOOL = "Boolean"
     JSON = "JSON"
     BINARY = "BINARY"
+    FLOAT = "FLOAT"
 
 
 class SQLObject:

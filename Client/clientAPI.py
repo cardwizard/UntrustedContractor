@@ -60,8 +60,10 @@ def get_data_from_publisher(client_name, table_name, schema):
     return decrypt_data(encrypted_data)
 
 
-def test_where_clause(client_name, table_name, schema, query):
-    args = {"publisher_name": client_name, "table_name": table_name, "alchemy_schema": schema, "query": query}
+def test_where_clause(client_name, table_name, schema, query, column_list=None):
+    args = {"publisher_name": client_name, "table_name": table_name, "alchemy_schema": schema, "query":
+        query, "column_list": dumps(column_list)}
+
     response = post(url.format("where"), data=args)
 
     data = []
@@ -93,9 +95,13 @@ if __name__ == '__main__':
         {"column_name": "name",
          "attributes": {"matching_type": "starts_with", "value": 'A'}
          },
+
         {"column_name": "age",
          "attributes": {"matching_type": "lesser_than", "value": 22}
          }
-    ]}
+    ],
+        "link_operation": "or"
+    }
 
-    print(decrypt_data(test_where_clause(client_name_, table_name_, schema_, dumps(query))))
+    value1 = decrypt_data(test_where_clause(client_name_, table_name_, schema_, dumps(query), ["name", "age"]))
+    print(pd.DataFrame(value1))

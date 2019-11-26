@@ -2,8 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="c8ec4ee1-baf1-4c80-bf3f-2df4e03637e1" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/clientAPI.py" beforeDir="false" afterPath="$PROJECT_DIR$/Client/clientAPI.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Contractor/backend/client/api.py" beforeDir="false" afterPath="$PROJECT_DIR$/Contractor/backend/client/api.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Contractor/backend/client/db_operations.py" beforeDir="false" afterPath="$PROJECT_DIR$/Contractor/backend/client/db_operations.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utils/models/schemas.py" beforeDir="false" afterPath="$PROJECT_DIR$/Utils/models/schemas.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -25,7 +29,7 @@
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="PropertiesComponent">
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="last_opened_file_path" value="$USER_HOME$/PycharmProjects/illumio" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="PyConsoleOptionsProvider">
@@ -58,7 +62,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.clientAPI">
+  <component name="RunManager" selected="Python.key_server">
     <configuration name="clientAPI" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="FinalProject" />
       <option name="INTERPRETER_OPTIONS" value="" />

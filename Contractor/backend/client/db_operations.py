@@ -65,7 +65,7 @@ class Filter:
 
         converted_data = convert_query_to_data(information, attributes)
 
-        id_list_ = [x["proj_id"] for x in converted_data]
+        id_list_ = [x.get("proj_id") for x in converted_data]
 
         return self._merge(id_list_)
 
@@ -98,7 +98,7 @@ class Filter:
         col_schema = get_local_schema(client_name, table_name, column_name)
         attributes = build_schema("projection_{}".format(column_name), col_schema)
 
-        if self._guess_data_type(col_schema) == "Integer":
+        if self._guess_data_type(col_schema) == "Integer" or self._guess_data_type(col_schema) == "Float":
             return self._filter_by_int(client_name, attributes, where_attr)
 
         elif self._guess_data_type(col_schema) == "String":
@@ -108,9 +108,21 @@ class Filter:
         return self.id_list
 
 
-def filter_by_where(client_name, table_name, where_query):
+def filter_by_where(client_name, table_name, where_query, link_operation="and"):
 
-    f = Filter()
-    for objects in where_query:
-        f = f.filter_by_where(client_name, table_name, objects["column_name"], objects["attributes"])
-    return f.get_id_list()
+    if link_operation == "and":
+        f = Filter()
+        for objects in where_query:
+            f = f.filter_by_where(client_name, table_name, objects["column_name"], objects["attributes"])
+        return f.get_id_list()
+
+    elif link_operation == "or":
+        id_list = []
+
+        for objects in where_query:
+            f = Filter()
+            filtered_query = f.filter_by_where(client_name, table_name, objects["column_name"], objects["attributes"])
+            id_list.extend(filtered_query.get_id_list())
+
+        return list(set(id_list))
+
