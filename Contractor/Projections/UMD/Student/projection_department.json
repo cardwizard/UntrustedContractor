@@ -1,1 +1,1 @@
-[{"Column": "startswith", "Type": "String", "Primary Key": false}, {"Column": "proj_id", "Type": "Integer", "Primary Key": true}]
+[{"Column": "split_id", "Type": "Integer", "Primary Key": true, "Auto Increment": true}, {"Column": "startswith", "Type": "String", "Primary Key": false, "Auto Increment": false}, {"Column": "proj_id_list", "Type": "JSON", "Primary Key": false, "Auto Increment": false}]

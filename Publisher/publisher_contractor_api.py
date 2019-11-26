@@ -101,13 +101,14 @@ if __name__ == '__main__':
     table_name_ = "Student"
 
     # Start from a clean slate
-    # unregister_client(client_name_)
+    unregister_client(client_name_)
     register_client(client_name_)
+
 
     # Create schema in our new format
     schema_ = Student.get_schema()
     add_new_table(client_name_, table_name_, schema=schema_)
-
+    #
     # Create some dummy data
     with open("../Data/dataNov-16-2019.csv") as f:
         data = f.read()

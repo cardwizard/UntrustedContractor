@@ -76,9 +76,28 @@ def where_clause():
     args = parser.parse_args()
     attributes = build_schema(args["table_name"], args["alchemy_schema"])
 
+    id_list = []
     if "where" in args["query"]:
         id_list = filter_by_where(args["publisher_name"], args["table_name"], args["query"]["where"],
                                   link_operation=args["query"].get("link_operation", "and"))
 
-        info = get_data_by_ids(attributes, args["publisher_name"], id_list, column_list=args["column_list"])
-        return jsonify(status=True, data=dumps(info))
+    # if "aggregation" in args["query"]:
+    #     id_list = filter_for_aggregations(args["publisher_name"], args["table_name"], args["query"]["aggregation"],
+    #                                       id_list)
+
+    info = get_data_by_ids(attributes, args["publisher_name"], id_list, column_list=args["column_list"])
+    return jsonify(status=True, data=dumps(info))
+
+
+@client_api.route("/aggregations", methods=["POST"])
+def aggregation_clause():
+    parser = reqparse.RequestParser()
+    parser.add_argument("publisher_name", type=str)
+    parser.add_argument("table_name", type=str)
+    parser.add_argument("alchemy_schema", type=loads)
+    parser.add_argument("query", type=loads)
+
+    args = parser.parse_args()
+    attributes = build_schema(args["table_name"], args["alchemy_schema"])
+
+    info = get_data_by_ids(attributes, args["publisher_name"], args["id_list"])

@@ -78,7 +78,7 @@ if __name__ == '__main__':
     table_name_ = "Student"
     schema_ = Student.get_schema()
 
-    # print(get_data_by_projections(client_name_, table_name_, ["age", "department"]))
+    # print(pd.DataFrame(get_data_by_projections(client_name_, table_name_, ["age", "department", "name", "registered"])))
     query1 = {"where": [
                 {"column_name": "age",
                  "attributes": {"matching_type": "lesser_than", "value": 22}
@@ -92,16 +92,21 @@ if __name__ == '__main__':
     ]}
 
     query = {"where": [
-        {"column_name": "name",
-         "attributes": {"matching_type": "starts_with", "value": 'A'}
-         },
+            {"column_name": "name",
+             "attributes": {"matching_type": "starts_with", "value": 'A'}
+             },
 
-        {"column_name": "age",
-         "attributes": {"matching_type": "lesser_than", "value": 22}
-         }
-    ],
-        "link_operation": "or"
+            {"column_name": "age",
+             "attributes": {"matching_type": "lesser_than", "value": 30}
+            }
+
+            # {"column_name": "department",
+            #  "attributes": {"matching_type": "starts_with", "value": 'H'}
+            # }
+        ],
+            "link_operation": "and"
     }
 
-    value1 = decrypt_data(test_where_clause(client_name_, table_name_, schema_, dumps(query), ["name", "age"]))
+    value1 = decrypt_data(test_where_clause(client_name_, table_name_, schema_, dumps(query), ["name", "age", "department"]))
     print(pd.DataFrame(value1))
+

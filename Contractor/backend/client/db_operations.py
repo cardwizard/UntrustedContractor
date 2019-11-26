@@ -23,7 +23,11 @@ def get_id_list_from_projection(client_name: str, table_name, column_name):
     attributes = build_schema("projection_{}".format(column_name), col_schema)
     projection_data = get_data(attributes, client_name)
 
-    id_list = [x["proj_id"] for x in projection_data]
+    id_list = []
+
+    for x in projection_data:
+        id_list.extend(x["proj_id_list"])
+
     return id_list
 
 
@@ -33,11 +37,18 @@ class Filter:
 
     @staticmethod
     def _guess_data_type(local_schema):
-
+        ## Hacky code.
         if len(local_schema) == 0:
             return "UNKNOWN"
 
-        return local_schema[0]["Type"]
+        return local_schema[1]["Type"]
+
+    @staticmethod
+    def _converge_list(converted_data):
+        id_list = []
+        for x in converted_data:
+            id_list.extend(x["proj_id_list"])
+        return id_list
 
     def _filter_by_int(self, client_name, attributes, where_attr):
 
@@ -65,8 +76,7 @@ class Filter:
 
         converted_data = convert_query_to_data(information, attributes)
 
-        id_list_ = [x.get("proj_id") for x in converted_data]
-
+        id_list_ = self._converge_list(converted_data)
         return self._merge(id_list_)
 
     def _filter_by_str(self, client_name, attributes, where_attr):
@@ -82,7 +92,7 @@ class Filter:
 
         converted_data = convert_query_to_data(information, attributes)
 
-        id_list_ = [x["proj_id"] for x in converted_data]
+        id_list_ = self._converge_list(converted_data)
 
         return self._merge(id_list_)
 
@@ -126,3 +136,6 @@ def filter_by_where(client_name, table_name, where_query, link_operation="and"):
 
         return list(set(id_list))
 
+
+def filter_for_aggregations(client_name, table_name, aggregation_info, id_list):
+    return id_list
