@@ -17,15 +17,17 @@ Student = SQLSchema([SQLObject("id", Types.INT),
 
 
 def decrypt_data(encrypted_data):
+
     fernet_key = get_key()
     crypt = Cryptor(fernet_key)
     decrypted_data = []
 
-    for data in encrypted_data:
-        try:
+    try:
+        for data in encrypted_data:
             decrypted_data.append(crypt.decrypt(data))
-        except:
-            decrypted_data.append(data)
+    except:
+        return encrypted_data
+
     return decrypted_data
 
 
@@ -93,23 +95,23 @@ if __name__ == '__main__':
     schema_ = Student.get_schema()
 
     query = {
-        "where": {
-            "match_criteria": [
-                    # {"column_name": "name",
-                    #  "attributes": {"matching_type": "starts_with", "value": 'A'}
-                    #  },
-                    {
-                        "column_name": "department",
-                        "attributes": {"matching_type": "starts_with", "value": 'ENEE'}
-                    },
-                    {
-                        "column_name": "age",
-                        "attributes": {"matching_type": "lesser_than", "value": 23}
-                    }
-                ],
-
-            "link_operation": "and"
-        },
+        # "where": {
+        #     "match_criteria": [
+        #             # {"column_name": "name",
+        #             #  "attributes": {"matching_type": "starts_with", "value": 'A'}
+        #             #  },
+        #             {
+        #                 "column_name": "department",
+        #                 "attributes": {"matching_type": "starts_with", "value": 'ENEE'}
+        #             },
+        #             {
+        #                 "column_name": "age",
+        #                 "attributes": {"matching_type": "lesser_than", "value": 23}
+        #             }
+        #         ],
+        #
+        #     "link_operation": "and"
+        # },
 
         "aggregation": {
             "column_name": "name",

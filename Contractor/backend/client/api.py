@@ -93,6 +93,9 @@ def where_clause():
         id_list = filter_for_aggregations(args["publisher_name"], args["table_name"], args["query"]["aggregation"],
                                           id_list, where_passed)
 
+        if not where_passed and args["query"]["aggregation"]["function"] == "count":
+            return jsonify(status=True, data=dumps([len(id_list)]))
+
         where_columns.extend([args["query"]["aggregation"]["column_name"]])
         args["column_list"] = where_columns
 
