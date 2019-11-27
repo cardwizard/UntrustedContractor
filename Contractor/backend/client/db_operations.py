@@ -5,7 +5,8 @@ from Contractor.backend.publisher.db_operations import get_data, build_schema, g
 from sqlalchemy.sql import func
 
 
-function_map_func = {"max": func.max, "min": func.min, "count": func.count}
+function_map_func = {"max": func.max, "min": func.min, "count": func.count, "sum": func.count, "avg": func.count}
+count_functions = ["count", "sum", "avg"]
 
 
 def get_local_schema(client_name: str, table_name: str, projection_name):
@@ -161,23 +162,23 @@ def filter_for_aggregations(client_name, table_name, aggregation_info, id_list=N
     col_schema = get_local_schema(client_name, table_name, column_name)
     agg_function = aggregation_info["function"]
 
-    if not check_int_schema(col_schema) and agg_function != "count":
+    if not check_int_schema(col_schema) and agg_function in count_functions:
         return []
 
     attributes = build_schema("projection_{}".format(column_name), col_schema)
 
     session = get_session(client_name)
     ProjectionSchema, Base = get_schema(attributes)
-    match_attr = "proj_id" if agg_function == "count" else "end"
+
+    match_attr = "proj_id" if agg_function in count_functions else "end"
 
     if where_passed:
         agg_evaluated = session.query(function_map_func[agg_function](getattr(ProjectionSchema, match_attr)))\
-            .filter(ProjectionSchema.proj_id
-                    .in_(where_id_list)).all()
+            .filter(ProjectionSchema.proj_id.in_(where_id_list)).all()
     else:
         agg_evaluated = session.query(function_map_func[agg_function](getattr(ProjectionSchema, match_attr))).all()
 
-    if agg_function == "count":
+    if agg_function in count_functions:
         query_o = session.query(getattr(ProjectionSchema, match_attr)).all()
         agg_id_list = [x[0] for x in query_o]
 
