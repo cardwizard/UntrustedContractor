@@ -78,9 +78,14 @@ def where_clause():
     attributes = build_schema(args["table_name"], args["alchemy_schema"])
 
     id_list = []
+    where_columns = []
+
     if "where" in args["query"]:
         id_list = filter_by_where(args["publisher_name"], args["table_name"], args["query"]["where"]["match_criteria"],
                                   link_operation=args["query"]["where"].get("link_operation", "and"))
+
+        for param in args["query"]["where"]["match_criteria"]:
+            where_columns.append(param["column_name"])
 
     if "aggregation" in args["query"]:
         where_passed = True if "where" in args["query"] else False
@@ -88,10 +93,8 @@ def where_clause():
         id_list = filter_for_aggregations(args["publisher_name"], args["table_name"], args["query"]["aggregation"],
                                           id_list, where_passed)
 
-        if args["query"]["aggregation"]["function"] == "count":
-            return jsonify(data=dumps([id_list]), status=True)
-
-        args["column_list"] = [args["query"]["aggregation"]["column_name"]]
+        where_columns.extend([args["query"]["aggregation"]["column_name"]])
+        args["column_list"] = where_columns
 
     info = get_data_by_ids(attributes, args["publisher_name"], id_list, column_list=args["column_list"])
     return jsonify(status=True, data=dumps(info))

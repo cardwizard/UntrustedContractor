@@ -93,21 +93,26 @@ if __name__ == '__main__':
     schema_ = Student.get_schema()
 
     query = {
-        # "where": {
-        #     "match_criteria": [
-        #             # {"column_name": "name",
-        #             #  "attributes": {"matching_type": "starts_with", "value": 'A'}
-        #             #  },
-        #             {"column_name": "department",
-        #              "attributes": {"matching_type": "starts_with", "value": 'HUMA'}
-        #             }
-        #         ],
-        #
-        #     "link_operation": "and"
-        # },
+        "where": {
+            "match_criteria": [
+                    # {"column_name": "name",
+                    #  "attributes": {"matching_type": "starts_with", "value": 'A'}
+                    #  },
+                    {
+                        "column_name": "department",
+                        "attributes": {"matching_type": "starts_with", "value": 'ENEE'}
+                    },
+                    {
+                        "column_name": "age",
+                        "attributes": {"matching_type": "lesser_than", "value": 23}
+                    }
+                ],
+
+            "link_operation": "and"
+        },
 
         "aggregation": {
-            "column_name": "age",
+            "column_name": "name",
             "function": "count"
             }
         }
