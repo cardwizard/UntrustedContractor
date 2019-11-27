@@ -78,35 +78,33 @@ if __name__ == '__main__':
     table_name_ = "Student"
     schema_ = Student.get_schema()
 
-    # print(pd.DataFrame(get_data_by_projections(client_name_, table_name_, ["age", "department", "name", "registered"])))
-    query1 = {"where": [
-                {"column_name": "age",
-                 "attributes": {"matching_type": "lesser_than", "value": 22}
-                }
-            ]}
+    query = {
+        "where": {
+            "match_criteria": [
+                    # {"column_name": "name",
+                    #  "attributes": {"matching_type": "starts_with", "value": 'A'}
+                    #  },
 
-    query2 = {"where": [
-        {"column_name": "name",
-         "attributes": {"matching_type": "starts_with", "value": 'A'}
-         }
-    ]}
+                    {"column_name": "age",
+                     "attributes": {"matching_type": "equals", "value": 23}
+                    }
+                    # ,
+                    #
+                    # {"column_name": "department",
+                    #  "attributes": {"matching_type": "starts_with", "value": 'H'}
+                    # }
+                ],
 
-    query = {"where": [
-            {"column_name": "name",
-             "attributes": {"matching_type": "starts_with", "value": 'A'}
-             },
-
-            {"column_name": "age",
-             "attributes": {"matching_type": "lesser_than", "value": 30}
-            }
-
-            # {"column_name": "department",
-            #  "attributes": {"matching_type": "starts_with", "value": 'H'}
-            # }
-        ],
             "link_operation": "and"
+        },
+        
+        "aggregation": {
+            "column_name": "age",
+            "function": "max"
+        }
     }
 
-    value1 = decrypt_data(test_where_clause(client_name_, table_name_, schema_, dumps(query), ["name", "age", "department"]))
+    value1 = decrypt_data(test_where_clause(client_name_, table_name_, schema_, dumps(query), ["name", "age",
+                                                                                               "department"]))
     print(pd.DataFrame(value1))
 

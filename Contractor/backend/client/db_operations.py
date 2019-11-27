@@ -46,20 +46,21 @@ class Filter:
     @staticmethod
     def _converge_list(converted_data):
         id_list = []
+
         for x in converted_data:
             id_list.extend(x["proj_id_list"])
+
         return id_list
 
     def _filter_by_int(self, client_name, attributes, where_attr):
-
         session = get_session(client_name)
         ProjectionSchema, Base = get_schema(attributes)
 
         if where_attr["matching_type"] == "equals":
             value = where_attr["value"]
             information = session.query(ProjectionSchema)\
-                .filter(getattr(ProjectionSchema, "start") < value)\
-                .filter(getattr(ProjectionSchema, "end") > value)
+                .filter(getattr(ProjectionSchema, "start") <= value)\
+                .filter(getattr(ProjectionSchema, "end") >= value)
 
         elif where_attr["matching_type"] == "greater_than":
             value = where_attr["value"]
@@ -101,6 +102,7 @@ class Filter:
             self.id_list = id_list
         else:
             self.id_list = list(set(self.id_list) & set(id_list))
+
         return Filter(self.id_list)
 
     def filter_by_where(self, client_name, table_name, column_name, where_attr):

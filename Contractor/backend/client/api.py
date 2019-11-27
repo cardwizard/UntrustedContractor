@@ -78,8 +78,8 @@ def where_clause():
 
     id_list = []
     if "where" in args["query"]:
-        id_list = filter_by_where(args["publisher_name"], args["table_name"], args["query"]["where"],
-                                  link_operation=args["query"].get("link_operation", "and"))
+        id_list = filter_by_where(args["publisher_name"], args["table_name"], args["query"]["where"]["match_criteria"],
+                                  link_operation=args["query"]["where"].get("link_operation", "and"))
 
     # if "aggregation" in args["query"]:
     #     id_list = filter_for_aggregations(args["publisher_name"], args["table_name"], args["query"]["aggregation"],
