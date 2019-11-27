@@ -2,7 +2,8 @@ from flask import Blueprint, jsonify
 from flask_restful import reqparse
 from json import loads, dumps
 from Contractor.backend.publisher.db_operations import get_data, build_schema, get_data_by_ids
-from Contractor.backend.client.db_operations import get_id_list_from_projection, filter_by_where
+from Contractor.backend.client.db_operations import get_id_list_from_projection, filter_by_where, \
+    filter_for_aggregations
 
 
 client_api = Blueprint("client_api", __name__, url_prefix='/v1/client')
@@ -81,9 +82,14 @@ def where_clause():
         id_list = filter_by_where(args["publisher_name"], args["table_name"], args["query"]["where"]["match_criteria"],
                                   link_operation=args["query"]["where"].get("link_operation", "and"))
 
-    # if "aggregation" in args["query"]:
-    #     id_list = filter_for_aggregations(args["publisher_name"], args["table_name"], args["query"]["aggregation"],
-    #                                       id_list)
+    if "aggregation" in args["query"] and "where" in args["query"]:
+        id_list = filter_for_aggregations(args["publisher_name"], args["table_name"], args["query"]["aggregation"],
+                                          id_list)
+
+        if args["query"]["aggregation"]["function"] == "count":
+            return jsonify(data=str(id_list), status=True)
+
+        args["column_list"] = [args["query"]["aggregation"]["column_name"]]
 
     info = get_data_by_ids(attributes, args["publisher_name"], id_list, column_list=args["column_list"])
     return jsonify(status=True, data=dumps(info))

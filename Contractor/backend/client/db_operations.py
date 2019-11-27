@@ -2,6 +2,10 @@ from pathlib import Path
 from json import load
 from Contractor.backend.publisher.db_operations import get_data, build_schema, get_data_by_ids, get_schema, get_session, \
     convert_query_to_data
+from sqlalchemy.sql import func
+
+
+function_map_max_min = {"max": func.max, "min": func.min, "count": func.min}
 
 
 def get_local_schema(client_name: str, table_name: str, projection_name):
@@ -140,4 +144,32 @@ def filter_by_where(client_name, table_name, where_query, link_operation="and"):
 
 
 def filter_for_aggregations(client_name, table_name, aggregation_info, id_list):
-    return id_list
+    where_id_list = id_list
+
+    column_name = "agg_{}".format(aggregation_info["column_name"])
+    col_schema = get_local_schema(client_name, table_name, column_name)
+    attributes = build_schema("projection_{}".format(column_name), col_schema)
+    agg_function = aggregation_info["function"]
+
+    session = get_session(client_name)
+    ProjectionSchema, Base = get_schema(attributes)
+
+    agg_evaluated = session.query(function_map_max_min[agg_function](ProjectionSchema.end))\
+        .filter(ProjectionSchema.proj_id
+                .in_(id_list)).all()
+
+    if agg_function == "count":
+        return agg_evaluated[0][0]
+
+    if not agg_evaluated:
+        return []
+
+    agg_value = agg_evaluated[0][0]
+
+    where_attr = {"matching_type": "equals", "value": agg_value}
+
+    f = Filter()
+    f = f.filter_by_where(client_name, table_name, aggregation_info["column_name"], where_attr=where_attr)
+    f = f._merge(where_id_list)
+
+    return f.get_id_list()
