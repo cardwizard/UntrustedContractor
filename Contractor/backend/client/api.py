@@ -82,12 +82,14 @@ def where_clause():
         id_list = filter_by_where(args["publisher_name"], args["table_name"], args["query"]["where"]["match_criteria"],
                                   link_operation=args["query"]["where"].get("link_operation", "and"))
 
-    if "aggregation" in args["query"] and "where" in args["query"]:
+    if "aggregation" in args["query"]:
+        where_passed = True if "where" in args["query"] else False
+
         id_list = filter_for_aggregations(args["publisher_name"], args["table_name"], args["query"]["aggregation"],
-                                          id_list)
+                                          id_list, where_passed)
 
         if args["query"]["aggregation"]["function"] == "count":
-            return jsonify(data=str(id_list), status=True)
+            return jsonify(data=dumps([id_list]), status=True)
 
         args["column_list"] = [args["query"]["aggregation"]["column_name"]]
 

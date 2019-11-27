@@ -22,7 +22,10 @@ def decrypt_data(encrypted_data):
     decrypted_data = []
 
     for data in encrypted_data:
-        decrypted_data.append(crypt.decrypt(data))
+        try:
+            decrypted_data.append(crypt.decrypt(data))
+        except:
+            decrypted_data.append(data)
     return decrypted_data
 
 
@@ -90,18 +93,18 @@ if __name__ == '__main__':
     schema_ = Student.get_schema()
 
     query = {
-        "where": {
-            "match_criteria": [
-                    # {"column_name": "name",
-                    #  "attributes": {"matching_type": "starts_with", "value": 'A'}
-                    #  },
-                    {"column_name": "department",
-                     "attributes": {"matching_type": "starts_with", "value": 'HUMA'}
-                    }
-                ],
-
-            "link_operation": "and"
-        },
+        # "where": {
+        #     "match_criteria": [
+        #             # {"column_name": "name",
+        #             #  "attributes": {"matching_type": "starts_with", "value": 'A'}
+        #             #  },
+        #             {"column_name": "department",
+        #              "attributes": {"matching_type": "starts_with", "value": 'HUMA'}
+        #             }
+        #         ],
+        #
+        #     "link_operation": "and"
+        # },
 
         "aggregation": {
             "column_name": "age",
@@ -109,6 +112,6 @@ if __name__ == '__main__':
             }
         }
 
-    value_agg = test_aggregations(client_name_, table_name_, schema_, dumps(query))
-    print(value_agg)
+    value_agg = decrypt_data(test_aggregations(client_name_, table_name_, schema_, dumps(query)))
+    print(pd.DataFrame(value_agg))
     print()

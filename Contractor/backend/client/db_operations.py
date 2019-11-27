@@ -143,7 +143,10 @@ def filter_by_where(client_name, table_name, where_query, link_operation="and"):
         return list(set(id_list))
 
 
-def filter_for_aggregations(client_name, table_name, aggregation_info, id_list):
+def filter_for_aggregations(client_name, table_name, aggregation_info, id_list=None, where_passed=False):
+    if where_passed and id_list is None:
+        return []
+
     where_id_list = id_list
 
     column_name = "agg_{}".format(aggregation_info["column_name"])
@@ -154,9 +157,12 @@ def filter_for_aggregations(client_name, table_name, aggregation_info, id_list):
     session = get_session(client_name)
     ProjectionSchema, Base = get_schema(attributes)
 
-    agg_evaluated = session.query(function_map_max_min[agg_function](ProjectionSchema.end))\
-        .filter(ProjectionSchema.proj_id
-                .in_(id_list)).all()
+    if where_passed:
+        agg_evaluated = session.query(function_map_max_min[agg_function](ProjectionSchema.end))\
+            .filter(ProjectionSchema.proj_id
+                    .in_(where_id_list)).all()
+    else:
+        agg_evaluated = session.query(function_map_max_min[agg_function](ProjectionSchema.end)).all()
 
     if agg_function == "count":
         return agg_evaluated[0][0]
@@ -170,6 +176,8 @@ def filter_for_aggregations(client_name, table_name, aggregation_info, id_list):
 
     f = Filter()
     f = f.filter_by_where(client_name, table_name, aggregation_info["column_name"], where_attr=where_attr)
-    f = f._merge(where_id_list)
+
+    if where_passed:
+        f = f._merge(where_id_list)
 
     return f.get_id_list()
