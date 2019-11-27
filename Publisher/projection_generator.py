@@ -69,7 +69,7 @@ class Projection:
                     marked = True
         return final_output
 
-    def create_projections(self, data, splits):
+    def create_projections_2(self, data, splits):
 
         if self.data_type == "int":
             schema = SQLSchema([SQLObject("split_id", Types.INT, True, True),
@@ -91,3 +91,24 @@ class Projection:
 
             return schema.get_schema(), [{"value": d["column"], "proj_id_list": [d["proj_id"]]}
                                          for d in data]
+
+    def create_projections(self, data, splits):
+
+        if self.data_type == "int":
+            schema = SQLSchema([SQLObject("proj_id", Types.INT, True),
+                                SQLObject("start", Types.INT),
+                                SQLObject("end", Types.INT)])
+            return schema.get_schema(), self._int_projections(data, splits)
+
+        if self.data_type == "str":
+            schema = SQLSchema([SQLObject("proj_id", Types.INT, True),
+                                SQLObject("startswith", Types.STR)])
+            return schema.get_schema(), self._str_projections(data, splits)
+
+        if self.data_type == "identity":
+            schema = SQLSchema([SQLObject("value", Types.STR),
+                                SQLObject("proj_id", Types.INT, True)])
+
+            return schema.get_schema(), [{"value": d["column"], "proj_id": d["proj_id"]}
+                                         for d in data]
+

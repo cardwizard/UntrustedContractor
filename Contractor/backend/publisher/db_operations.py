@@ -166,13 +166,13 @@ def get_data_by_ids(attributes, db_name, id_list, column_list=None):
     return convert_query_to_data(information, attributes, column_list)
 
 
-def cache_schema_locally(client_name: str, table_name: str, projection_name: str, schema: List):
+def cache_schema_locally(client_name: str, table_name: str, projection_name: str, schema: List, proj_prefix: str):
     path = Path("Projections").joinpath(client_name).joinpath(table_name)
 
     if not path.exists():
         path.mkdir(parents=True)
 
-    with open(path.joinpath("projection_{}.json".format(projection_name)), "w") as f:
+    with open(path.joinpath(proj_prefix.format(projection_name) + ".json"), "w") as f:
         dump(schema, f)
 
 

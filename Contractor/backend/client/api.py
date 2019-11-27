@@ -100,4 +100,7 @@ def aggregation_clause():
     args = parser.parse_args()
     attributes = build_schema(args["table_name"], args["alchemy_schema"])
 
-    info = get_data_by_ids(attributes, args["publisher_name"], args["id_list"])
+    # id_list = get_data_by_ids(attributes, args["publisher_name"], [x for x in range(1, 20)])
+    id_list = [x for x in range(1, 20)]
+
+    return jsonify(status=True)

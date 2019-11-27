@@ -66,6 +66,28 @@ def encrypt_data(data_list, skip_keys):
     return encrypted_data
 
 
+def create_projections_2(data_to_add):
+    p_age = Projection("int")
+    schema_age, projection_age = p_age.create_projections_2([{"column": int(x["age"]), "proj_id": x["id"]} for x in data_to_add],
+                                              [(10, 15), (15, 18), (18, 20), (20, 23), (23, 26), (26, 29), (30, 100)])
+
+    p_name = Projection("str")
+    schema_name, projection_name = p_name.create_projections_2([{"column": x["name"], "proj_id": x["id"]} for x in data_to_add],
+                                                [chr(x) for x in range(ord('A'), ord('Z'))])
+
+    p_dept = Projection("str")
+    schema_dept, projection_dept = p_dept.create_projections_2([{"column": x["department"], "proj_id": x["id"]} for x in data_to_add],
+                                                ['ENEE', 'CMSC', 'COMM', 'HUMA', 'ENTC'])
+
+    p_reg = Projection("identity")
+    schema_reg, projection_registered = p_reg.create_projections_2([{"column": x["registered"], "proj_id": x["id"]} for x in data_to_add],
+                                                     [])
+    return [{"column": "age", "schema": schema_age, "projection": projection_age},
+            {"column": "name", "schema": schema_name, "projection": projection_name},
+            {"column": "department", "schema": schema_dept, "projection": projection_dept},
+            {"column": "registered", "schema": schema_reg, "projection": projection_registered}]
+
+
 def create_projections(data_to_add):
     p_age = Projection("int")
     schema_age, projection_age = p_age.create_projections([{"column": int(x["age"]), "proj_id": x["id"]} for x in data_to_add],
@@ -88,9 +110,9 @@ def create_projections(data_to_add):
             {"column": "registered", "schema": schema_reg, "projection": projection_registered}]
 
 
-def add_projection(client_name, table_name, column_name, schema, data_list):
+def add_projection(client_name, table_name, column_name, schema, data_list, projection_type="normal"):
     args = {"publisher_name": client_name, "table_name": table_name, "column": column_name, "schema": schema,
-            "data": dumps(data_list)}
+            "data": dumps(data_list), "projection_type": projection_type}
     response = post(url.format("add_projection"), data=args)
     print(response.status_code, response.json())
 
@@ -103,7 +125,6 @@ if __name__ == '__main__':
     # Start from a clean slate
     unregister_client(client_name_)
     register_client(client_name_)
-
 
     # Create schema in our new format
     schema_ = Student.get_schema()
@@ -133,8 +154,15 @@ if __name__ == '__main__':
 
     # Add encrypted data to the newly created table
     add_data(client_name_, table_name_, schema=schema_, data_list=data)
-    projections = create_projections(data_to_add)
 
+    projections = create_projections(data_to_add)
+    projections_2 = create_projections_2(data_to_add)
+
+    # Creating projection for aggregation!
     for proj in projections:
+        add_projection(client_name=client_name_, table_name=table_name_, column_name=proj["column"],
+                       schema=proj["schema"], data_list=proj["projection"], projection_type="agg")
+
+    for proj in projections_2:
         add_projection(client_name=client_name_, table_name=table_name_, column_name=proj["column"],
                        schema=proj["schema"], data_list=proj["projection"])

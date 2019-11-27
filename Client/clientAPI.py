@@ -73,6 +73,17 @@ def test_where_clause(client_name, table_name, schema, query, column_list=None):
     return data
 
 
+def test_aggregations(client_name, table_name, schema, query):
+    args = {"publisher_name": client_name, "table_name": table_name, "alchemy_schema": schema, "query": query}
+
+    response = post(url.format("aggregations"), data=args)
+    data = []
+    if response.json().get("status"):
+        data = loads(response.json().get("data"))
+
+    return data
+
+
 if __name__ == '__main__':
     client_name_ = "UMD"
     table_name_ = "Student"
@@ -97,14 +108,13 @@ if __name__ == '__main__':
 
             "link_operation": "and"
         },
-        
+
         "aggregation": {
             "column_name": "age",
             "function": "max"
         }
     }
 
-    value1 = decrypt_data(test_where_clause(client_name_, table_name_, schema_, dumps(query), ["name", "age",
-                                                                                               "department"]))
-    print(pd.DataFrame(value1))
-
+    # value1 = decrypt_data(test_where_clause(client_name_, table_name_, schema_, dumps(query), ["name", "age", "department"]))
+    # print(pd.DataFrame(value1))
+    test_aggregations(client_name_, table_name_, schema_, dumps(query))

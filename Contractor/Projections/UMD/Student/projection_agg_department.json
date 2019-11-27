@@ -1,0 +1,1 @@
+[{"Column": "proj_id", "Type": "Integer", "Primary Key": true, "Auto Increment": false}, {"Column": "startswith", "Type": "String", "Primary Key": false, "Auto Increment": false}]
