@@ -138,11 +138,17 @@ if __name__ == '__main__':
         "group_by":
             {
                 "aggregations": {
-                    "function": "max",
+                    "function": "min",
                     "column": "age"
                 },
                 "by": "department"
             }
     }
+
     grouped_values = decrypt_data(test_group_by(client_name_, table_name_, schema_, dumps(query)))
-    print(pd.DataFrame(grouped_values))
+
+    if query["group_by"]["aggregations"]["function"] == "max":
+        print(pd.DataFrame(grouped_values).groupby(["department"]).age.max())
+
+    if query["group_by"]["aggregations"]["function"] == "min":
+        print(pd.DataFrame(grouped_values).groupby(["department"]).age.min())

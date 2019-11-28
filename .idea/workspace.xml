@@ -3,7 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="c8ec4ee1-baf1-4c80-bf3f-2df4e03637e1" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Contractor/backend/client/db_operations.py" beforeDir="false" afterPath="$PROJECT_DIR$/Contractor/backend/client/db_operations.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/clientAPI.py" beforeDir="false" afterPath="$PROJECT_DIR$/Client/clientAPI.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
