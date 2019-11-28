@@ -89,36 +89,60 @@ def test_aggregations(client_name, table_name, schema, query):
     return data
 
 
+def test_group_by(client_name, table_name, schema, query):
+    args = {"publisher_name": client_name, "table_name": table_name, "alchemy_schema": schema, "query": query}
+
+    response = post(url.format("group_by"), data=args)
+    data = []
+    if response.json().get("status"):
+        data = loads(response.json().get("data"))
+
+    return data
+
+
 if __name__ == '__main__':
     client_name_ = "UMD"
     table_name_ = "Student"
     schema_ = Student.get_schema()
 
+    # query = {
+    #     "where": {
+    #         "match_criteria": [
+    #                 {"column_name": "name",
+    #                  "attributes": {"matching_type": "starts_with", "value": 'A'}
+    #                  },
+    #                 # {
+    #                 #     "column_name": "department",
+    #                 #     "attributes": {"matching_type": "starts_with", "value": 'ENEE'}
+    #                 # },
+    #                 {
+    #                     "column_name": "age",
+    #                     "attributes": {"matching_type": "lesser_than", "value": 50}
+    #                 }
+    #             ],
+    #
+    #         "link_operation": "and"
+    #     },
+    #
+    #     "aggregation": {
+    #         "column_name": "age",
+    #         "function": "count"
+    #         }
+    #     }
+
+    # value_agg = decrypt_data(test_aggregations(client_name_, table_name_, schema_, dumps(query)))
+    # print(pd.DataFrame(value_agg))
+    # print()
+
     query = {
-        "where": {
-            "match_criteria": [
-                    {"column_name": "name",
-                     "attributes": {"matching_type": "starts_with", "value": 'A'}
-                     },
-                    # {
-                    #     "column_name": "department",
-                    #     "attributes": {"matching_type": "starts_with", "value": 'ENEE'}
-                    # },
-                    {
-                        "column_name": "age",
-                        "attributes": {"matching_type": "lesser_than", "value": 50}
-                    }
-                ],
-
-            "link_operation": "and"
-        },
-
-        "aggregation": {
-            "column_name": "age",
-            "function": "count"
+        "group_by":
+            {
+                "aggregations": {
+                    "function": "max",
+                    "column": "age"
+                },
+                "by": "department"
             }
-        }
-
-    value_agg = decrypt_data(test_aggregations(client_name_, table_name_, schema_, dumps(query)))
-    print(pd.DataFrame(value_agg))
-    print()
+    }
+    grouped_values = decrypt_data(test_group_by(client_name_, table_name_, schema_, dumps(query)))
+    print(pd.DataFrame(grouped_values))
