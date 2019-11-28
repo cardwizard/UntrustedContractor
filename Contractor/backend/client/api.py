@@ -103,8 +103,8 @@ def where_clause():
     return jsonify(status=True, data=dumps(info))
 
 
-@client_api.route("/aggregations", methods=["POST"])
-def aggregation_clause():
+@client_api.route("/group_by", methods=["POST"])
+def group_by():
     parser = reqparse.RequestParser()
     parser.add_argument("publisher_name", type=str)
     parser.add_argument("table_name", type=str)
@@ -112,9 +112,4 @@ def aggregation_clause():
     parser.add_argument("query", type=loads)
 
     args = parser.parse_args()
-    attributes = build_schema(args["table_name"], args["alchemy_schema"])
-
-    # id_list = get_data_by_ids(attributes, args["publisher_name"], [x for x in range(1, 20)])
-    id_list = [x for x in range(1, 20)]
-
-    return jsonify(status=True)
+    print(args["query"])
