@@ -203,6 +203,13 @@ def filter_for_aggregations(client_name, table_name, aggregation_info, id_list=N
 
 def filter_by_groups(client_name, table_name, query):
 
+    """
+    Group By Queries work on very specific queries as of now. Will only work if you run a group by on a string based
+    column and do the aggregations min and max on a column having an integer.
+
+    Currently, only one projection for the view age_dept exists which makes it only work for min-max queries for
+    department and age.
+    """
     aggregation = query["aggregations"]
     group_by_column = query["by"]
 
@@ -219,6 +226,7 @@ def filter_by_groups(client_name, table_name, query):
         .group_by(ProjectionSchema.startswith).all()
 
     mega_query = []
+
     for agg_info in grouped_info:
         sub_query = and_(ProjectionSchema.end == agg_info[1], ProjectionSchema.startswith == agg_info[0])
         mega_query.append(sub_query)
