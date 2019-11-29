@@ -105,11 +105,6 @@ if __name__ == '__main__':
     table_name_ = "Student"
     schema_ = Student.get_schema()
 
-
-    value_agg = decrypt_data(test_aggregations(client_name_, table_name_, schema_, dumps(query)))
-    print(pd.DataFrame(value_agg))
-    print()
-
     query = {
         "group_by":
             {
@@ -121,13 +116,13 @@ if __name__ == '__main__':
             }
     }
 
-    grouped_values = decrypt_data(test_group_by(client_name_, table_name_, schema_, dumps(query)))
-
-    if query["group_by"]["aggregations"]["function"] == "max":
-        print(pd.DataFrame(grouped_values).groupby(["department"]).age.max())
-
-    if query["group_by"]["aggregations"]["function"] == "min":
-        print(pd.DataFrame(grouped_values).groupby(["department"]).age.min())
+    # grouped_values = decrypt_data(test_group_by(client_name_, table_name_, schema_, dumps(query)))
+    #
+    # if query["group_by"]["aggregations"]["function"] == "max":
+    #     print(pd.DataFrame(grouped_values).groupby(["department"]).age.max())
+    #
+    # if query["group_by"]["aggregations"]["function"] == "min":
+    #     print(pd.DataFrame(grouped_values).groupby(["department"]).age.min())
 
     aggquery = {
         "where": {

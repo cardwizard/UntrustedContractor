@@ -63,7 +63,7 @@ def where_filter(where_query, result, returned_table):
 def agg_filter(query, value_agg, returned_table):
 
     if query['aggregation']['function'] == "count":
-        return value_agg[0]
+        return len(value_agg)
 
     if query['aggregation']['function'] == "min":
         col_name = query['aggregation']['column_name']
