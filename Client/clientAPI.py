@@ -3,9 +3,9 @@ from Utils.cryptors import Cryptor
 from Utils.models.schemas import SQLObject, Types, SQLSchema
 from json import loads, dumps
 from Utils.key_operations import get_key
-
+from Client.client_util import filter_at_client
 import pandas as pd
-
+import sys
 url = "http://localhost:10000/v1/client/{}"
 
 # Defining a table class
@@ -98,7 +98,7 @@ if __name__ == '__main__':
         "where": {
             "match_criteria": [
                     {"column_name": "name",
-                     "attributes": {"matching_type": "starts_with", "value": 'A'}
+                     "attributes": {"matching_type": "starts_with", "value": 'B'}
                      },
                     # {
                     #     "column_name": "department",
@@ -106,19 +106,18 @@ if __name__ == '__main__':
                     # },
                     {
                         "column_name": "age",
-                        "attributes": {"matching_type": "lesser_than", "value": 50}
+                        "attributes": {"matching_type": "lesser_than", "value": 26}
                     }
-                ],
+            ],
 
             "link_operation": "and"
         },
 
         "aggregation": {
             "column_name": "age",
-            "function": "count"
+            "function": "min"
             }
         }
 
-    value_agg = decrypt_data(test_aggregations(client_name_, table_name_, schema_, dumps(query)))
-    print(pd.DataFrame(value_agg))
-    print()
+    result = decrypt_data(test_aggregations(client_name_, table_name_, schema_, dumps(query)))
+    filter_at_client(query, result)

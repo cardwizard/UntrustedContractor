@@ -5,8 +5,8 @@ from Contractor.backend.publisher.db_operations import get_data, build_schema, g
 from sqlalchemy.sql import func
 
 
-function_map_func = {"max": func.max, "min": func.min, "count": func.count, "sum": func.count, "avg": func.count}
-count_functions = ["count", "sum", "avg"]
+function_map_func = {"max": func.max, "min": func.min, "count": func.count, "sum": func.sum, "avg": func.avg}
+count_functions = ["count"]
 
 
 def get_local_schema(client_name: str, table_name: str, projection_name):
