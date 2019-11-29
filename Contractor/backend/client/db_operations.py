@@ -8,7 +8,6 @@ from sqlalchemy import or_, and_
 
 function_map_func = {"max": func.max, "min": func.min, "count": func.count}
 
-
 def get_local_schema(client_name: str, table_name: str, projection_name):
     path = Path("Projections").joinpath(client_name).joinpath(table_name).joinpath(
         "projection_{}.json".format(projection_name))

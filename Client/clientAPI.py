@@ -3,7 +3,7 @@ from Utils.cryptors import Cryptor
 from Utils.models.schemas import SQLObject, Types, SQLSchema
 from json import loads, dumps
 from Utils.key_operations import get_key
-
+from Client.client_util import filter_at_client
 import pandas as pd
 
 url = "http://localhost:10000/v1/client/{}"
@@ -105,11 +105,60 @@ if __name__ == '__main__':
     table_name_ = "Student"
     schema_ = Student.get_schema()
 
-    query = {
+    # query = {
+    #     "where": {
+    #         "match_criteria": [
+    #                 {"column_name": "name",
+    #                  "attributes": {"matching_type": "starts_with", "value": '!'}
+    #                  },
+    #                 # {
+    #                 #     "column_name": "department",
+    #                 #     "attributes": {"matching_type": "starts_with", "value": 'ENEE'}
+    #                 # },
+    #                 {
+    #                     "column_name": "age",
+    #                     "attributes": {"matching_type": "lesser_than", "value": 50}
+    #                 }
+    #             ],
+    #
+    #         "link_operation": "and"
+    #     },
+    #
+    #     "aggregation": {
+    #         "column_name": "age",
+    #         "function": "max"
+    #         }
+    #     }
+    #
+    # value_agg = decrypt_data(test_aggregations(client_name_, table_name_, schema_, dumps(query)))
+    # print(pd.DataFrame(value_agg))
+    # print()
+
+    # query = {
+    #     "group_by":
+    #         {
+    #             "aggregations": {
+    #                 "function": "min",
+    #                 "column": "age"
+    #             },
+    #             "by": "department"
+    #         }
+    # }
+    #
+
+    # grouped_values = decrypt_data(test_group_by(client_name_, table_name_, schema_, dumps(query)))
+    #
+    # if query["group_by"]["aggregations"]["function"] == "max":
+    #     print(pd.DataFrame(grouped_values).groupby(["department"]).age.max())
+    #
+    # if query["group_by"]["aggregations"]["function"] == "min":
+    #     print(pd.DataFrame(grouped_values).groupby(["department"]).age.min())
+
+    aggquery = {
         "where": {
             "match_criteria": [
                     {"column_name": "name",
-                     "attributes": {"matching_type": "starts_with", "value": '!'}
+                     "attributes": {"matching_type": "starts_with", "value": 'A'}
                      },
                     # {
                     #     "column_name": "department",
@@ -126,29 +175,10 @@ if __name__ == '__main__':
 
         "aggregation": {
             "column_name": "age",
-            "function": "max"
+            "function": "count"
             }
         }
 
-    value_agg = decrypt_data(test_aggregations(client_name_, table_name_, schema_, dumps(query)))
-    print(pd.DataFrame(value_agg))
-    print()
+    result = decrypt_data(test_aggregations(client_name_, table_name_, schema_, dumps(aggquery)))
+    filter_at_client(aggquery, result)
 
-    # query = {
-    #     "group_by":
-    #         {
-    #             "aggregations": {
-    #                 "function": "min",
-    #                 "column": "age"
-    #             },
-    #             "by": "department"
-    #         }
-    # }
-    #
-    # grouped_values = decrypt_data(test_group_by(client_name_, table_name_, schema_, dumps(query)))
-    #
-    # if query["group_by"]["aggregations"]["function"] == "max":
-    #     print(pd.DataFrame(grouped_values).groupby(["department"]).age.max())
-    #
-    # if query["group_by"]["aggregations"]["function"] == "min":
-    #     print(pd.DataFrame(grouped_values).groupby(["department"]).age.min())
