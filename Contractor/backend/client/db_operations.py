@@ -1,8 +1,9 @@
 from pathlib import Path
 from json import load
-from Contractor.backend.publisher.db_operations import get_data, build_schema, get_data_by_ids, get_schema, \
+from Contractor.backend.publisher.db_operations import get_data, build_schema, get_schema, \
     get_session, convert_query_to_data
 from sqlalchemy.sql import func
+from sqlalchemy import or_, and_
 
 
 function_map_func = {"max": func.max, "min": func.min, "count": func.count, "sum": func.sum, "avg": func.avg}
@@ -198,3 +199,41 @@ def filter_for_aggregations(client_name, table_name, aggregation_info, id_list=N
         f = f._merge(where_id_list)
 
     return f.get_id_list()
+
+
+def filter_by_groups(client_name, table_name, query):
+
+    """
+    Group By Queries work on very specific queries as of now. Will only work if you run a group by on a string based
+    column and do the aggregations min and max on a column having an integer.
+
+    Currently, only one projection for the view age_dept exists which makes it only work for min-max queries for
+    department and age.
+    """
+    aggregation = query["aggregations"]
+    group_by_column = query["by"]
+
+    view_name = "view_" + "_".join(sorted([aggregation["column"], group_by_column]))
+    function = aggregation["function"]
+
+    schema = get_local_schema(client_name, table_name, view_name)
+    attributes = build_schema("{}".format("view_age_department"), schema)
+    session = get_session(client_name)
+
+    ProjectionSchema, Base = get_schema(attributes)
+    grouped_info = session.query(ProjectionSchema.startswith,
+                                 function_map_func[function](ProjectionSchema.end))\
+        .group_by(ProjectionSchema.startswith).all()
+
+    mega_query = []
+
+    for agg_info in grouped_info:
+        sub_query = and_(ProjectionSchema.end == agg_info[1], ProjectionSchema.startswith == agg_info[0])
+        mega_query.append(sub_query)
+
+    query2 = session.query(ProjectionSchema.proj_id).filter(or_(*mega_query))
+
+    info = query2.all()
+
+    id_list = [x[0] for x in info]
+    return id_list

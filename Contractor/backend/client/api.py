@@ -3,7 +3,7 @@ from flask_restful import reqparse
 from json import loads, dumps
 from Contractor.backend.publisher.db_operations import get_data, build_schema, get_data_by_ids
 from Contractor.backend.client.db_operations import get_id_list_from_projection, filter_by_where, \
-    filter_for_aggregations
+    filter_for_aggregations, filter_by_groups
 
 
 client_api = Blueprint("client_api", __name__, url_prefix='/v1/client')
@@ -108,8 +108,13 @@ def group_by():
     parser = reqparse.RequestParser()
     parser.add_argument("publisher_name", type=str)
     parser.add_argument("table_name", type=str)
-    parser.add_argument("alchemy_schema", type=loads)
     parser.add_argument("query", type=loads)
+    parser.add_argument("alchemy_schema", type=loads)
 
     args = parser.parse_args()
-    print(args["query"])
+
+    attributes = build_schema(args["table_name"], args["alchemy_schema"])
+    id_list = filter_by_groups(args["publisher_name"], args["table_name"], query=args["query"]["group_by"])
+
+    info = get_data_by_ids(attributes, args["publisher_name"], id_list)
+    return jsonify(status=True, data=dumps(info))

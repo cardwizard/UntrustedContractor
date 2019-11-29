@@ -4,7 +4,6 @@
     <list default="true" id="c8ec4ee1-baf1-4c80-bf3f-2df4e03637e1" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Client/clientAPI.py" beforeDir="false" afterPath="$PROJECT_DIR$/Client/clientAPI.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Contractor/backend/client/db_operations.py" beforeDir="false" afterPath="$PROJECT_DIR$/Contractor/backend/client/db_operations.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -26,7 +25,7 @@
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="PropertiesComponent">
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/Contractor/Projections/UMD/Student" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="PyConsoleOptionsProvider">
@@ -38,13 +37,14 @@
     </option>
   </component>
   <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\Users\HP\Desktop\Databases\FinalProject\Data" />
-    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\HP\Desktop\Databases\FinalProject\Utils" />
       <recent name="C:\Users\HP\Desktop\Databases\FinalProject" />
       <recent name="C:\Users\HP\Desktop\Databases\FinalProject\Contractor\backend" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\HP\Desktop\Databases\FinalProject\Contractor\Projections\UMD\Student" />
+      <recent name="C:\Users\HP\Desktop\Databases\FinalProject\Data" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -169,8 +169,8 @@
       <list>
         <item itemvalue="Python.clientAPI" />
         <item itemvalue="Python.runserver" />
-        <item itemvalue="Python.publisher_contractor_api" />
         <item itemvalue="Python.key_server" />
+        <item itemvalue="Python.publisher_contractor_api" />
         <item itemvalue="Python.schemas" />
       </list>
     </recent_temporary>
@@ -200,16 +200,5 @@
         </entry>
       </map>
     </option>
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/Contractor/backend/client/db_operations.py</url>
-          <line>180</line>
-          <option name="timeStamp" value="14" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
 </project>

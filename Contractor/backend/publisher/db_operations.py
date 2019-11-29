@@ -157,12 +157,15 @@ def get_data_by_ids(attributes, db_name, id_list, column_list=None):
     NewSchema, Base = get_schema(attributes)
     session = get_session(db_name)
 
-    if not column_list:
-        information = session.query(NewSchema).filter(NewSchema.id.in_(id_list)).all()
-        return convert_query_to_data(information, attributes)
+    query = session.query(NewSchema)
 
-    column_list += ["id"]
-    information = session.query(NewSchema).options(load_only(*column_list)).filter(NewSchema.id.in_(id_list)).all()
+    if column_list:
+        query = query.options(load_only(*column_list))
+        column_list += ["id"]
+
+    query = query.filter(NewSchema.id.in_(id_list))
+    information = query.all()
+
     return convert_query_to_data(information, attributes, column_list)
 
 

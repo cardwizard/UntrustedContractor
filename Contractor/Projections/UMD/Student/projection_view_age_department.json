@@ -1,0 +1,6 @@
+[
+  {"Column": "proj_id", "Type": "Integer", "Primary Key": true},
+  {"Column": "startswith", "Type": "Integer", "Primary Key": false, "Auto Increment": false},
+  {"Column": "start", "Type": "Integer", "Primary Key": false, "Auto Increment": false},
+  {"Column": "end", "Type": "Integer", "Primary Key": false, "Auto Increment": false}
+]

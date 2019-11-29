@@ -5,7 +5,7 @@ from json import loads, dumps
 from Utils.key_operations import get_key
 from Client.client_util import filter_at_client
 import pandas as pd
-import sys
+
 url = "http://localhost:10000/v1/client/{}"
 
 # Defining a table class
@@ -89,16 +89,51 @@ def test_aggregations(client_name, table_name, schema, query):
     return data
 
 
+def test_group_by(client_name, table_name, schema, query):
+    args = {"publisher_name": client_name, "table_name": table_name, "alchemy_schema": schema, "query": query}
+
+    response = post(url.format("group_by"), data=args)
+    data = []
+    if response.json().get("status"):
+        data = loads(response.json().get("data"))
+
+    return data
+
+
 if __name__ == '__main__':
     client_name_ = "UMD"
     table_name_ = "Student"
     schema_ = Student.get_schema()
 
+
+    value_agg = decrypt_data(test_aggregations(client_name_, table_name_, schema_, dumps(query)))
+    print(pd.DataFrame(value_agg))
+    print()
+
     query = {
+        "group_by":
+            {
+                "aggregations": {
+                    "function": "min",
+                    "column": "age"
+                },
+                "by": "department"
+            }
+    }
+
+    grouped_values = decrypt_data(test_group_by(client_name_, table_name_, schema_, dumps(query)))
+
+    if query["group_by"]["aggregations"]["function"] == "max":
+        print(pd.DataFrame(grouped_values).groupby(["department"]).age.max())
+
+    if query["group_by"]["aggregations"]["function"] == "min":
+        print(pd.DataFrame(grouped_values).groupby(["department"]).age.min())
+
+    aggquery = {
         "where": {
             "match_criteria": [
                     {"column_name": "name",
-                     "attributes": {"matching_type": "starts_with", "value": 'B'}
+                     "attributes": {"matching_type": "starts_with", "value": 'A'}
                      },
                     # {
                     #     "column_name": "department",
@@ -106,18 +141,18 @@ if __name__ == '__main__':
                     # },
                     {
                         "column_name": "age",
-                        "attributes": {"matching_type": "lesser_than", "value": 26}
+                        "attributes": {"matching_type": "lesser_than", "value": 50}
                     }
-            ],
+                ],
 
             "link_operation": "and"
         },
 
         "aggregation": {
             "column_name": "age",
-            "function": "min"
+            "function": "count"
             }
         }
 
-    result = decrypt_data(test_aggregations(client_name_, table_name_, schema_, dumps(query)))
-    filter_at_client(query, result)
+    result = decrypt_data(test_aggregations(client_name_, table_name_, schema_, dumps(aggquery)))
+    filter_at_client(aggquery, result)
