@@ -105,16 +105,46 @@ if __name__ == '__main__':
     table_name_ = "Student"
     schema_ = Student.get_schema()
 
-    query = {
-        "group_by":
-            {
-                "aggregations": {
-                    "function": "min",
-                    "column": "age"
-                },
-                "by": "department"
-            }
-    }
+    # query = {
+    #     "where": {
+    #         "match_criteria": [
+    #                 {"column_name": "name",
+    #                  "attributes": {"matching_type": "starts_with", "value": '!'}
+    #                  },
+    #                 # {
+    #                 #     "column_name": "department",
+    #                 #     "attributes": {"matching_type": "starts_with", "value": 'ENEE'}
+    #                 # },
+    #                 {
+    #                     "column_name": "age",
+    #                     "attributes": {"matching_type": "lesser_than", "value": 50}
+    #                 }
+    #             ],
+    #
+    #         "link_operation": "and"
+    #     },
+    #
+    #     "aggregation": {
+    #         "column_name": "age",
+    #         "function": "max"
+    #         }
+    #     }
+    #
+    # value_agg = decrypt_data(test_aggregations(client_name_, table_name_, schema_, dumps(query)))
+    # print(pd.DataFrame(value_agg))
+    # print()
+
+    # query = {
+    #     "group_by":
+    #         {
+    #             "aggregations": {
+    #                 "function": "min",
+    #                 "column": "age"
+    #             },
+    #             "by": "department"
+    #         }
+    # }
+    #
 
     # grouped_values = decrypt_data(test_group_by(client_name_, table_name_, schema_, dumps(query)))
     #
@@ -151,3 +181,4 @@ if __name__ == '__main__':
 
     result = decrypt_data(test_aggregations(client_name_, table_name_, schema_, dumps(aggquery)))
     filter_at_client(aggquery, result)
+
