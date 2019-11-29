@@ -6,8 +6,7 @@ from sqlalchemy.sql import func
 from sqlalchemy import or_, and_
 
 
-function_map_func = {"max": func.max, "min": func.min, "count": func.count, "sum": func.count, "avg": func.count}
-count_functions = ["count", "sum", "avg"]
+function_map_func = {"max": func.max, "min": func.min, "count": func.count}
 
 
 def get_local_schema(client_name: str, table_name: str, projection_name):
@@ -154,7 +153,7 @@ def check_int_schema(col_schema):
 
 
 def filter_for_aggregations(client_name, table_name, aggregation_info, id_list=None, where_passed=False):
-    if where_passed and id_list is None:
+    if where_passed and (id_list is None or len(id_list) == 0):
         return []
 
     where_id_list = id_list
@@ -163,7 +162,7 @@ def filter_for_aggregations(client_name, table_name, aggregation_info, id_list=N
     col_schema = get_local_schema(client_name, table_name, column_name)
     agg_function = aggregation_info["function"]
 
-    if not check_int_schema(col_schema) and agg_function in count_functions:
+    if not check_int_schema(col_schema) and agg_function == "count":
         return []
 
     attributes = build_schema("projection_{}".format(column_name), col_schema)
@@ -171,7 +170,7 @@ def filter_for_aggregations(client_name, table_name, aggregation_info, id_list=N
     session = get_session(client_name)
     ProjectionSchema, Base = get_schema(attributes)
 
-    match_attr = "proj_id" if agg_function in count_functions else "end"
+    match_attr = "proj_id" if agg_function == "count" else "end"
 
     if where_passed:
         agg_evaluated = session.query(function_map_func[agg_function](getattr(ProjectionSchema, match_attr)))\
@@ -179,7 +178,7 @@ def filter_for_aggregations(client_name, table_name, aggregation_info, id_list=N
     else:
         agg_evaluated = session.query(function_map_func[agg_function](getattr(ProjectionSchema, match_attr))).all()
 
-    if agg_function in count_functions:
+    if agg_function == "count":
         query_o = session.query(getattr(ProjectionSchema, match_attr)).all()
         agg_id_list = [x[0] for x in query_o]
 

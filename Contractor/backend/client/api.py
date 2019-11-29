@@ -79,6 +79,7 @@ def where_clause():
 
     id_list = []
     where_columns = []
+    count_functions = ["avg", "sum"]
 
     if "where" in args["query"]:
         id_list = filter_by_where(args["publisher_name"], args["table_name"], args["query"]["where"]["match_criteria"],
@@ -92,6 +93,9 @@ def where_clause():
 
         id_list = filter_for_aggregations(args["publisher_name"], args["table_name"], args["query"]["aggregation"],
                                           id_list, where_passed)
+
+        if args["query"]["aggregation"]["function"] in count_functions:
+            args["query"]["aggregation"]["function"] = "count"
 
         if not where_passed and args["query"]["aggregation"]["function"] == "count":
             return jsonify(status=True, data=dumps([len(id_list)]))
